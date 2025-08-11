@@ -1,5 +1,6 @@
 import { type Item } from '$lib/types';
 
+/* PLU first products */
 const bake_off: Item[] = [
   {
     name: 'Nuss Nougat Croissant',
@@ -175,6 +176,7 @@ const drinks: Item[] = [
   }
 ];
 
+/* EAN products */
 const ean: Item[] = [
   {
     name: 'Bioland Milch 3.8%',
@@ -227,6 +229,7 @@ const popular_ean: Item[] = [
   {
     name: 'Coca Cola',
     price: 1.29,
+    lidl_discount: 0.35,
     ean: 99,
     pfand: 0.25,
     gebinde: 6,

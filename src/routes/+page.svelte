@@ -8,114 +8,24 @@
 
   let current_items: Item[] = $state([
     {
-      name: 'Gurke',
-      price: 0.79,
+      name: 'Coca Cola',
+      price: 1.29,
+      lidl_discount: 0.35,
+      pfand: 0.25,
     },
     {
       name: 'Nuss Nougat Croissant',
-      price: 1.29,
+      price: 1.19,
+      lidl_plus_discount: 0.20,
     },
     {
       name: 'Bioland Milch 3.8%',
       price: 1.19,
     },
     {
-      name: 'Honig',
-      price: 3.79,
-    },
-
-    {
-      name: 'Gurke',
-      price: 0.79,
-    },
-    {
-      name: 'Nuss Nougat Croissant',
-      price: 1.29,
-    },
-    {
-      name: 'Bioland Milch 3.8%',
-      price: 1.19,
-    },
-    {
-      name: 'Honig',
-      price: 3.79,
-    },{
-      name: 'Gurke',
-      price: 0.79,
-    },
-    {
-      name: 'Nuss Nougat Croissant',
-      price: 1.29,
-    },
-    {
-      name: 'Bioland Milch 3.8%',
-      price: 1.19,
-    },
-    {
-      name: 'Honig',
-      price: 3.79,
-    },{
-      name: 'Gurke',
-      price: 0.79,
-    },
-    {
-      name: 'Nuss Nougat Croissant',
-      price: 1.29,
-    },
-    {
-      name: 'Bioland Milch 3.8%',
-      price: 1.19,
-    },
-    {
-      name: 'Honig',
-      price: 3.79,
-    },{
-      name: 'Gurke',
-      price: 0.79,
-    },
-    {
-      name: 'Nuss Nougat Croissant',
-      price: 1.29,
-    },
-    {
-      name: 'Bioland Milch 3.8%',
-      price: 1.19,
-    },
-    {
-      name: 'Honig',
-      price: 3.79,
-    },
-    {
-      name: 'Gurke',
-      price: 0.79,
-    },
-    {
-      name: 'Nuss Nougat Croissant',
-      price: 1.29,
-    },
-    {
-      name: 'Bioland Milch 3.8%',
-      price: 1.19,
-    },
-    {
-      name: 'Honig',
-      price: 3.79,
-    },
-    {
-      name: 'Gurke',
-      price: 0.79,
-    },
-    {
-      name: 'Nuss Nougat Croissant',
-      price: 1.29,
-    },
-    {
-      name: 'Bioland Milch 3.8%',
-      price: 1.19,
-    },
-    {
-      name: 'Honig',
-      price: 3.79,
+      name: 'Manuka Honig',
+      price: 15.99,
+      discount: 0.2,
     },
   ]);
 
