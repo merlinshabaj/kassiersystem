@@ -2,6 +2,7 @@
   import Itemlist from "$lib/components/Itemlist.svelte";
   import Numpad from "$lib/components/Numpad.svelte";
   import RightButtons from "$lib/components/RightButtons.svelte";
+  import OperationButton from "$lib/components/OperationButton.svelte";
   import { type Item } from '$lib/types';
   import { item_list } from "$lib/data";
   import { assert } from "$lib/utilities";
@@ -78,7 +79,8 @@
 
     if (
       event.key === 'c' ||
-      (event.metaKey && event.key === 'Backspace')
+      (event.metaKey && event.key === 'Backspace') ||
+      event.key === 'Escape'
     ) {
       input = '';
     }
@@ -93,14 +95,7 @@
   <div class="h-screen mx-10">
     <div class="flex flex-row gap-2">
       <input type="text" bind:value={input} placeholder="PLU" class="w-full my-2 bg-neutral-200 border border-neutral-300 rounded-xs p-1.5">
-      <div 
-        class="place-content-center bg-neutral-200 active:bg-neutral-300 my-2 border border-neutral-300 p-1.5 rounded text-lg"
-        onpointerdown={() => {
-          input = '';
-        }}
-      >
-        C
-      </div>
+      
       <div 
         class="place-content-center bg-neutral-200 active:bg-neutral-300 my-2 border border-neutral-300 p-1.5 rounded text-lg"
         onpointerdown={() => {
@@ -109,6 +104,21 @@
       >
       back
       </div>
+      <div 
+        class="place-content-center bg-neutral-200 active:bg-neutral-300 my-2 border border-neutral-300 p-1.5 rounded text-lg"
+        onpointerdown={() => {
+          input = '';
+        }}
+      >
+        C
+      </div>
+    </div>
+
+    <div class="flex flex-row h-[19lvh] gap-4 my-3">
+      <OperationButton text={'Storno'} onpointerdown={() => {}} />
+      <OperationButton text={'Bon abbruch'} onpointerdown={() => {}} />
+      <OperationButton text={'Gebinde'} onpointerdown={() => {}} />
+      <OperationButton text={'Menge'} onpointerdown={() => {}} />
     </div>
 
     <div class="grid grid-cols-[4fr_1fr] gap-6">

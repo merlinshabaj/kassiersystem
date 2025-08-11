@@ -8,7 +8,7 @@
   {#each numbers as number}
     <div
       id="{number.toString()}"
-      class="h-[21lvh] bg-neutral-200 rounded text-7xl text-center active:bg-neutral-300 place-content-center"
+      class="h-[16lvh] bg-neutral-200 rounded text-7xl text-center active:bg-neutral-300 place-content-center"
       onpointerdown={() => {
         input += number.toString();
       }}

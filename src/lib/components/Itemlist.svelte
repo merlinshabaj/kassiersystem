@@ -36,6 +36,20 @@
       previous_items_length = items.length;
     }
   });
+
+  const price_format = new Intl.NumberFormat(
+    'de-DE',
+    {
+      style: 'currency',
+      currency: 'EUR',
+    },
+  );
+
+  function format_price(
+    price: number,
+  ): string {
+    return price_format.format(price);
+  }
 </script>
 
 <div class="flex flex-col m-2">
@@ -43,18 +57,26 @@
     {#each items as item}
       <div class="grid grid-cols-[9fr_auto] my-0.5 rounded-sm bg-neutral-200 p-1 hover:bg-neutral-300 active:bg-neutral-400">
         <span class="font-medium">{item.name}</span>
-        <span class="font-medium text-right">{item.price}€</span>
+        <span class="font-medium text-right">{format_price(item.price)}</span>
+
+        {#if item.pfand}
+          <span class="">Pfand</span>
+          <span class="text-right">{format_price(item.pfand)}</span>
+        {/if}
+
         {#if item.lidl_discount}
           <span class="text-red-500">Preisvorteil</span>
-          <span class="text-red-500">−{item.lidl_discount.toFixed(2)}€</span>
+          <span class="text-red-500">{format_price(-item.lidl_discount)}</span>
         {/if}
+
         {#if item.lidl_plus_discount}
           <span class="text-blue-500">Lidl Plus Rabatt</span>
-          <span class="text-blue-500">−{item.lidl_plus_discount.toFixed(2)}€</span>
+          <span class="text-blue-500">{format_price(-item.lidl_plus_discount)}</span>
         {/if}
+
         {#if item.discount}
           <span class="text-red-500">Rabatt</span>
-          <span class="text-red-500">−{(item.price * item.discount).toFixed(2)}€</span>
+          <span class="text-red-500">{format_price(-item.price * item.discount)}</span>
         {/if}
       </div>
       <div class="bg-neutral-50 h-1"></div>
@@ -63,6 +85,6 @@
   
   <div class="flex flex-row justify-between font-bold">
     <span>Total:</span>
-    <span>{total_price.toFixed(2)}€</span>
+    <span>{format_price(total_price)}</span>
   </div>
 </div>
