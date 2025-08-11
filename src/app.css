@@ -6,3 +6,8 @@
     /* @apply dark:bg-neutral-700 */
   }
 }
+
+
+.simulated-active {
+  background-color: oklch(87% 0 0) !important;
+}

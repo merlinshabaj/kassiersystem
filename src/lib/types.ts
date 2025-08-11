@@ -3,4 +3,7 @@ export type Item = {
   price: number,
   plu?: number,
   ean?: number,
+  weighing?: boolean,
+  pfand?: number,
+  gebinde?: number,
 };

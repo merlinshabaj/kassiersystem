@@ -1,9 +1,106 @@
 <script lang='ts'>
   import Itemlist from "$lib/components/Itemlist.svelte";
+  import Numpad from "$lib/components/Numpad.svelte";
+  import RightButtons from "$lib/components/RightButtons.svelte";
   import { type Item } from '$lib/types';
   import { item_list } from "$lib/data";
+  import { assert } from "$lib/utilities";
 
   let current_items: Item[] = $state([
+    {
+      name: 'Gurke',
+      price: 0.79,
+    },
+    {
+      name: 'Nuss Nougat Croissant',
+      price: 1.29,
+    },
+    {
+      name: 'Bioland Milch 3.8%',
+      price: 1.19,
+    },
+    {
+      name: 'Honig',
+      price: 3.79,
+    },
+
+    {
+      name: 'Gurke',
+      price: 0.79,
+    },
+    {
+      name: 'Nuss Nougat Croissant',
+      price: 1.29,
+    },
+    {
+      name: 'Bioland Milch 3.8%',
+      price: 1.19,
+    },
+    {
+      name: 'Honig',
+      price: 3.79,
+    },{
+      name: 'Gurke',
+      price: 0.79,
+    },
+    {
+      name: 'Nuss Nougat Croissant',
+      price: 1.29,
+    },
+    {
+      name: 'Bioland Milch 3.8%',
+      price: 1.19,
+    },
+    {
+      name: 'Honig',
+      price: 3.79,
+    },{
+      name: 'Gurke',
+      price: 0.79,
+    },
+    {
+      name: 'Nuss Nougat Croissant',
+      price: 1.29,
+    },
+    {
+      name: 'Bioland Milch 3.8%',
+      price: 1.19,
+    },
+    {
+      name: 'Honig',
+      price: 3.79,
+    },{
+      name: 'Gurke',
+      price: 0.79,
+    },
+    {
+      name: 'Nuss Nougat Croissant',
+      price: 1.29,
+    },
+    {
+      name: 'Bioland Milch 3.8%',
+      price: 1.19,
+    },
+    {
+      name: 'Honig',
+      price: 3.79,
+    },
+    {
+      name: 'Gurke',
+      price: 0.79,
+    },
+    {
+      name: 'Nuss Nougat Croissant',
+      price: 1.29,
+    },
+    {
+      name: 'Bioland Milch 3.8%',
+      price: 1.19,
+    },
+    {
+      name: 'Honig',
+      price: 3.79,
+    },
     {
       name: 'Gurke',
       price: 0.79,
@@ -23,9 +120,62 @@
   ]);
 
   let input: string = $state('');
-  
-  const numbers = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0, '00', ','];
+
+  function simulate_click(element: HTMLElement) {
+    element.dispatchEvent(new PointerEvent('pointerdown', {
+      bubbles: true,
+      cancelable: true
+    }));
+
+    element.classList.add('simulated-active');
+    
+    setTimeout(() => {
+      element.dispatchEvent(new PointerEvent('pointerup', {
+        bubbles: true,
+        cancelable: true
+      }));
+
+      element.classList.remove('simulated-active')
+      
+      element.click();
+    }, 100);
+  }
+
+  function keybindings(event: KeyboardEvent) {
+    if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(event.key)) {
+      const element = document.getElementById(event.key);
+      assert(element !== null);
+      simulate_click(element);
+    }
+
+    if (event.key === 'Backspace') {
+      input = input.slice(0, -1);
+    }
+
+    if (event.key === 'Enter' && event.shiftKey) {
+      const item = item_list.find(item => item.ean !== undefined && item.ean.toString() === input);
+      if (item !== undefined) {
+        current_items.push(item);
+        input = '';
+      }
+    } else if (event.key === 'Enter') {
+      const item = item_list.find(item => item.plu !== undefined && item.plu.toString() === input);
+      if (item !== undefined) {
+        current_items.push(item);
+        input = '';
+      }
+    }
+
+    if (
+      event.key === 'c' ||
+      (event.metaKey && event.key === 'Backspace')
+    ) {
+      input = '';
+    }
+  }
 </script>
+
+<svelte:body onkeydown={keybindings}/>
 
 <div class="grid grid-cols-[1fr_2fr] select-none cursor-default">
   <Itemlist items={current_items} />
@@ -52,54 +202,8 @@
     </div>
 
     <div class="grid grid-cols-[4fr_1fr] gap-6">
-      <div class="grid grid-cols-3 grid-rows-4 gap-3.5">
-        {#each numbers as number}
-          <div
-            class="bg-neutral-200 rounded text-7xl text-center active:bg-neutral-300 py-2"
-            onpointerdown={() => {
-              input += number.toString();
-            }}
-          >
-            {number}
-          </div>
-        {/each}
-      </div>
-      
-      <div class="flex flex-col gap-2">
-        <div
-          class="w-full h-full bg-neutral-200 text-center place-content-center active:bg-neutral-300 rounded-xs"
-          onpointerdown={() => {
-            const item = item_list.find(item => item.ean !== undefined && item.ean.toString() === input);
-            if (item !== undefined) {
-              current_items.push(item);
-              input = '';
-            }
-          }}
-        >
-        EAN
-        </div>
-
-        <div
-          class="w-full h-full bg-neutral-200 text-center place-content-center active:bg-neutral-300 rounded-xs"
-          onpointerdown={() => {
-            const item = item_list.find(item => item.plu !== undefined && item.plu.toString() === input);
-            if (item !== undefined) {
-              current_items.push(item);
-              input = '';
-            }
-          }}
-        >
-        PLU
-        </div>
-        
-        <div
-          class="w-full h-full bg-neutral-200 text-center place-content-center active:bg-neutral-300 rounded-xs"
-          onpointerdown={() => {}}
-        >
-        Summe
-        </div>
-      </div>
-
+      <Numpad bind:input={input} />
+      <RightButtons {current_items} bind:input={input} />
     </div>
   </div>
 </div>
