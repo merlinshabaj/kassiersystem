@@ -2,10 +2,14 @@
   import { type Item } from '$lib/types';
   import { assert } from '$lib/utilities';
 
-  let {items}: {items: Item[]} = $props();
+  let { items, selected_item }: { items: Item[], selected_item: Item | undefined } = $props();
   const total_price = $derived(
     items.reduce((sum, item) => {
       let price = sum;
+
+      if (item.storno) {
+        return price;
+      }
 
       if (item.lidl_discount !== undefined) {
         price -= item.lidl_discount;
@@ -57,12 +61,29 @@
   ): string {
     return price_format.format(price);
   }
+
+  function select_item(event: PointerEvent) {
+    // const item_element = event. as HTMLElement;
+    // assert(item_element !== null);
+
+    // console.log('item:', item_element)
+  }
 </script>
 
 <div class="flex flex-col m-2">
   <div id="list" class="flex flex-col h-[50vh] overflow-scroll {hide_scrollbar ? 'scrollbar-hide' : ''}">
     {#each items as item}
-      <div class="grid grid-cols-[9fr_auto] my-0.5 rounded-sm bg-neutral-200 p-1 active:bg-neutral-300">
+      <div 
+        class="
+          grid
+          grid-cols-[9fr_auto]
+          my-0.5 rounded-sm
+          bg-neutral-200 p-1
+          active:bg-neutral-300
+          {item.storno ? 'line-through' : ''}
+        "
+        onpointerdown={select_item}
+      >
         <span class="font-medium">{item.name}</span>
         <span class="font-medium text-right">{format_price(item.price)}</span>
 

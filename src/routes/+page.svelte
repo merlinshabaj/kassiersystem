@@ -13,22 +13,28 @@
       price: 1.29,
       lidl_discount: 0.35,
       pfand: 0.25,
+      storno: false,
     },
     {
       name: 'Nuss Nougat Croissant',
       price: 1.19,
       lidl_plus_discount: 0.20,
+      storno: false,
     },
     {
       name: 'Bioland Milch 3.8%',
       price: 1.19,
+      storno: true,
     },
     {
       name: 'Manuka Honig',
       price: 15.99,
       discount: 0.2,
+      storno: false,
     },
   ]);
+
+  let selected_item: Item | undefined = $state();
 
   let input: string = $state('');
 
@@ -85,6 +91,14 @@
       input = '';
     }
   }
+
+  function storno() {
+    if (selected_item === undefined) {
+      alert('no selection');
+      return;
+    }
+    selected_item.storno = true;
+  }
 </script>
 
 <svelte:body onkeydown={keybindings}/>
@@ -115,7 +129,7 @@
     </div>
 
     <div class="flex flex-row h-[19lvh] gap-4 my-3">
-      <OperationButton text={'Storno'} onpointerdown={() => {}} />
+      <OperationButton text={'Storno'} onpointerdown={storno} />
       <OperationButton text={'Bon abbruch'} onpointerdown={() => {}} />
       <OperationButton text={'Gebinde'} onpointerdown={() => {}} />
       <OperationButton text={'Menge'} onpointerdown={() => {}} />

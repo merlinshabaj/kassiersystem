@@ -257,4 +257,7 @@ export const item_list: Item[] = [
   ...vegetables,
   ...ean,
   ...popular_ean,
-];
+].map(item => ({
+  ...item,
+  storno: false,
+}));

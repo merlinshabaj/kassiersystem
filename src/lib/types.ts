@@ -1,6 +1,9 @@
 export type Item = {
   name: string,
   price: number,
+
+  storno?: boolean,
+
   plu?: number,
   ean?: number,
   weighing?: boolean,
