@@ -5,7 +5,8 @@
   let {items}: {items: Item[]} = $props();
   const total_price = $derived(
     items.reduce((sum, item) => {
-      let price = sum + item.price;
+      let price = sum;
+
       if (item.lidl_discount !== undefined) {
         price -= item.lidl_discount;
       }
@@ -15,7 +16,13 @@
       }
 
       if (item.discount !== undefined) {
-        price *= item.discount;
+        price += (item.price * (1 - item.discount));
+      } else {
+        price += item.price;
+      }
+
+      if (item.pfand !== undefined) {
+        price += item.pfand;
       }
 
       return price;
@@ -55,7 +62,7 @@
 <div class="flex flex-col m-2">
   <div id="list" class="flex flex-col h-[50vh] overflow-scroll {hide_scrollbar ? 'scrollbar-hide' : ''}">
     {#each items as item}
-      <div class="grid grid-cols-[9fr_auto] my-0.5 rounded-sm bg-neutral-200 p-1 hover:bg-neutral-300 active:bg-neutral-400">
+      <div class="grid grid-cols-[9fr_auto] my-0.5 rounded-sm bg-neutral-200 p-1 active:bg-neutral-300">
         <span class="font-medium">{item.name}</span>
         <span class="font-medium text-right">{format_price(item.price)}</span>
 
@@ -79,7 +86,6 @@
           <span class="text-red-500">{format_price(-item.price * item.discount)}</span>
         {/if}
       </div>
-      <div class="bg-neutral-50 h-1"></div>
     {/each}
   </div>
   
