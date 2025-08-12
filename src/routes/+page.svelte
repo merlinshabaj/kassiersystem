@@ -89,7 +89,12 @@
     if (event.key === 'Enter' && event.shiftKey) {
       const item = item_list.find(item => item.ean !== undefined && item.ean.toString() === input);
       if (item !== undefined) {
-        current_items.push(item);
+        const item_copy = { ...item };
+        if (menge > 1) {
+          item_copy.count = menge;
+          menge = 0;
+        }
+        current_items.push(item_copy);
         input = '';
         
       }
