@@ -152,7 +152,7 @@
     if (Number.isNaN(menge)) {
       if (selected_items().at(0) !== undefined) {
         const selected_item = { ...selected_items().at(0)! };
-        selected_item.discount = undefined; 
+        selected_item.discount_applied = undefined; 
         selected_item.count = undefined;
         current_items.push(selected_item);
       }
