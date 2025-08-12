@@ -8,14 +8,14 @@
   class="
     w-full
     h-full
-    bg-neutral-200
+    bg-neutral-200 dark:bg-neutral-800
     text-center
     place-content-center
     border
-    border-neutral-300
+    border-neutral-300 dark:border-none
     rounded-xs
     font-medium
-    { disabled ? 'text-neutral-600 border-none'  : 'active:bg-neutral-300' }
+    { disabled ? 'text-neutral-600 border-none'  : 'active:bg-neutral-300 dark:active:bg-neutral-700' }
   "
   {onpointerdown}
 >{text}

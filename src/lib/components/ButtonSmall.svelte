@@ -8,11 +8,11 @@
   class="
     h-fit
     p-2
-    bg-neutral-200
+    bg-neutral-200 dark:bg-neutral-800
     text-center
     place-content-center
     border
-    border-neutral-300
+    border-neutral-300 dark:border-neutral-700
     rounded-md
     font-medium
     { disabled ? 'text-neutral-600 border-none'  : 'active:bg-neutral-300' }

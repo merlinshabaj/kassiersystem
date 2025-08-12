@@ -99,9 +99,9 @@
           my-0.5
           p-1
           rounded-sm
-          bg-neutral-200
+          bg-neutral-200 dark:bg-neutral-800
           {item.storno ? 'line-through *:text-neutral-500' : ''}
-          {item.selected ? 'bg-neutral-300' : ''}
+          {item.selected ? 'bg-neutral-300 dark:bg-neutral-700!' : ''}
         "
         onpointerdown={() => select_item(items, i)}
       >
@@ -138,7 +138,7 @@
           my-0.5
           p-1
           rounded-sm
-          bg-neutral-200
+          bg-neutral-200 dark:bg-neutral-800
         "
       >
       {menge}x
