@@ -2,7 +2,7 @@
   import { type Item_list } from '$lib/types';
   import { assert } from '$lib/utilities';
 
-  let { items, menge }: { items: Item_list, menge: number } = $props();
+  let { items, menge, lidl_plus }: { items: Item_list, menge: number, lidl_plus: boolean } = $props();
   const total_price = $derived(
     items.reduce((sum, item) => {
       let price = sum;
@@ -15,7 +15,7 @@
         price -= item.lidl_discount;
       }
 
-      if (item.lidl_plus_discount !== undefined) {
+      if (lidl_plus && item.lidl_plus_discount !== undefined) {
         price -= item.lidl_plus_discount;
       }
 
@@ -119,7 +119,7 @@
           <span class="text-red-500">Preisvorteil</span>
           <span class="text-red-500">{format_price(-item.lidl_discount * (item.count ?? 1))}</span>
         {/if}
-        {#if item.lidl_plus_discount}
+        {#if lidl_plus && item.lidl_plus_discount}
           <span class="text-blue-500">Lidl Plus Rabatt</span>
           <span class="text-blue-500">{format_price(-item.lidl_plus_discount * (item.count ?? 1))}</span>
         {/if}

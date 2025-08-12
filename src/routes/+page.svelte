@@ -60,6 +60,8 @@
 
   let menge: number = $state(0);
 
+  let lidl_plus: boolean = $state(false);
+
   function simulate_click(element: HTMLElement) {
     element.dispatchEvent(new PointerEvent('pointerdown', {
       bubbles: true,
@@ -228,14 +230,19 @@
 
 <div class="grid grid-cols-[1fr_2fr] select-none cursor-default dark:text-white">
   <div class="flex flex-col">
-    <Itemlist items={current_items} {menge} />
+    <Itemlist items={current_items} {menge} {lidl_plus} />
     <div class="h-[20%] p-2 gap-2 grid grid-cols-3 grid-rows-2 items-center">
-      <ButtonSmall text={'Dummy'} />
-      <ButtonSmall text={'Dummy'} />
-      <ButtonSmall text={'Dummy'} />
-      <ButtonSmall text={'Dummy'} />
-      <ButtonSmall text={'Dummy'} />
+      <ButtonSmall text={''} />
+      <ButtonSmall text={''} />
+      <ButtonSmall text={''} />
+      <ButtonSmall text={''} />
+      <ButtonSmall text={''} />
       <ButtonSmall text={'Rabatt'} onpointerdown={() => discount()} disabled={!discount_allowed()} />
+    </div>
+    <div class="w-full h-1 m-2 bg-neutral-400 dark:bg-neutral-800 rounded-2xl"></div>
+    <div class="flex flex-col gap-2 p-2">
+      <ButtonSmall text={'Lidl Plus'} disabled={lidl_plus} onpointerdown={() => lidl_plus = true} />
+      <ButtonSmall text={'Waare'} />
     </div>
   </div>
   
