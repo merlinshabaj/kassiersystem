@@ -18,6 +18,7 @@ type Item_state = {
   selected?: boolean,
   count?: number,
   discount_applied?: boolean,
+  gebinde_applied?: boolean,
 }
 
 export type Item_list = (Item & Item_state)[];

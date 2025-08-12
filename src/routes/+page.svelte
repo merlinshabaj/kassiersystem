@@ -129,14 +129,31 @@
     items: Item_list,
     selected_items: Item_list,
   ) {
-    selected_items.forEach(item => {
-      const count = item.count ?? 1;
-      const gebinde = item.gebinde ?? 1;
-      item.count = count * gebinde;
-      item.selected = false;
-    });
+    const selected_item = selected_items.at(0);
+    if (selected_item === undefined) {
+      return;
+    }
+
+    if (selected_item.gebinde_applied) {
+      return;
+    }
+    
+    const count = selected_item.count ?? 1;
+    const gebinde = selected_item.gebinde ?? 1;
+    selected_item.count = count * gebinde;
+    selected_item.selected = false;
+    selected_item.gebinde_applied = true;
 
     select_last_item(items)
+  }
+
+  function allow_gebinde() {
+    const selected_item = selected_items().at(0);
+    if (selected_item === undefined) {
+      return;
+    }
+
+    return selected_item.gebinde_applied;
   }
 
   function select_last_item(items: Item_list) {
@@ -152,7 +169,7 @@
     if (Number.isNaN(menge)) {
       if (selected_items().at(0) !== undefined) {
         const selected_item = { ...selected_items().at(0)! };
-        selected_item.discount_applied = undefined; 
+        selected_item.discount_applied = undefined;
         selected_item.count = undefined;
         current_items.push(selected_item);
       }
@@ -239,7 +256,7 @@
     <div class="grow-2 flex flex-row gap-4 my-3">
       <ButtonFull text={'Storno'} disabled={!allow_storno()} onpointerdown={() => storno(current_items, selected_items())} />
       <ButtonFull text={'Bon Abbruch'} disabled={current_items.length === 0} onpointerdown={() => current_items = []}/>
-      <ButtonFull text={'Gebinde'} disabled={current_items.length === 0} onpointerdown={() => gebinde(current_items, selected_items())} />
+      <ButtonFull text={'Gebinde'} disabled={current_items.length === 0 || allow_gebinde()} onpointerdown={() => gebinde(current_items, selected_items())} />
       <ButtonFull text={'Menge'} disabled={current_items.length === 0} onpointerdown={() => apply_menge()}
       />
     </div>
