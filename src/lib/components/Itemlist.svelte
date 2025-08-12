@@ -28,7 +28,7 @@
       }
 
       if (item.pfand !== undefined) {
-        price += item.pfand;
+        price += item.pfand * (item.count ?? 1);
       }
 
       return price;
