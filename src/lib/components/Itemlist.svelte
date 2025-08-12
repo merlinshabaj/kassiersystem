@@ -56,7 +56,6 @@
     if (menge > 1) {
       assert(list !== null);
       list.scrollTop = list.scrollHeight;
-      previous_items_length = items.length;
     }
   });
 
