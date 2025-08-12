@@ -5,6 +5,7 @@ export type Item = {
   storno?: boolean,
   selected?: boolean,
   count?: number,
+  discount_applied?: boolean,
 
   plu?: number,
   ean?: number,

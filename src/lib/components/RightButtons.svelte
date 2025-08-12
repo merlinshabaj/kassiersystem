@@ -1,7 +1,7 @@
 <script lang='ts'>
   import { item_list } from "$lib/data";
   import { type Item } from '$lib/types';
-  import OperationButton from "./OperationButton.svelte";
+  import OperationButton from "./ButtonFull.svelte";
 
   let { current_items, input = $bindable(), menge = $bindable() }: 
     { current_items: Item[], input: string, menge: number } = $props();

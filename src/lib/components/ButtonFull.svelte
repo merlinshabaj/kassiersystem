@@ -1,5 +1,6 @@
 <script lang='ts'>
-  const { text, onpointerdown }: { text: string, onpointerdown: (() => void) } = $props();
+  const { text, onpointerdown }:
+    { text: string, onpointerdown?: (() => void) } = $props();
 
 </script>
 

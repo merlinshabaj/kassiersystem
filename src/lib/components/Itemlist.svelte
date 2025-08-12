@@ -19,7 +19,7 @@
         price -= item.lidl_plus_discount;
       }
 
-      if (item.discount !== undefined) {
+      if (item.discount !== undefined && item.discount_applied === true) {
         price += ((item.price * (item.count ?? 1)) * (1 - item.discount));
       } else if (item.count !== undefined && item.count > 1) {
         price += item.price * item.count;
@@ -123,8 +123,8 @@
           <span class="text-blue-500">Lidl Plus Rabatt</span>
           <span class="text-blue-500">{format_price(-item.lidl_plus_discount * (item.count ?? 1))}</span>
         {/if}
-        {#if item.discount}
-          <span class="text-red-500">Rabatt</span>
+        {#if item.discount_applied === true && item.discount !== undefined}
+          <span class="text-red-500">Rabatt {item.discount * 100}%</span>
           <span class="text-red-500">{format_price(-item.price * item.discount * (item.count ?? 1))}</span>
         {/if}
       </div>

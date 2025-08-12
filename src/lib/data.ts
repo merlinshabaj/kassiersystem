@@ -263,4 +263,6 @@ export const item_list: Item[] = [
   storno: false,
   selected: false,
   count: 1,
+  discount: 0.2,
+  discount_applied: false,
 }));

@@ -2,7 +2,8 @@
   import Itemlist from "$lib/components/Itemlist.svelte";
   import Numpad from "$lib/components/Numpad.svelte";
   import RightButtons from "$lib/components/RightButtons.svelte";
-  import OperationButton from "$lib/components/OperationButton.svelte";
+  import ButtonFull from "$lib/components/ButtonFull.svelte";
+  import ButtonSmall from "$lib/components/ButtonSmall.svelte";
   import { type Item } from '$lib/types';
   import { item_list } from "$lib/data";
   import { assert } from "$lib/utilities";
@@ -16,6 +17,7 @@
       storno: false,
       selected: false,
       gebinde: 6,
+      discount: 0.2,
     },
     {
       name: 'Nuss Nougat Croissant',
@@ -23,17 +25,20 @@
       lidl_plus_discount: 0.20,
       storno: false,
       selected: false,
+      discount: undefined,
     },
     {
       name: 'Bioland Milch 3.8%',
       price: 1.19,
       storno: false,
       selected: false,
+      discount: 0.2,
     },
     {
       name: 'Manuka Honig',
       price: 15.99,
       discount: 0.2,
+      discount_applied: true,
       storno: false,
       selected: true,
       gebinde: 15,
@@ -172,12 +177,41 @@
 
     input = ''; 
   }
+
+  function rabatt() {
+    const selected_item = selected_items().at(-1);
+    assert(selected_item !== undefined);
+
+    selected_item.discount_applied = true;
+  }
+
+  function discount_allowed(): boolean {
+    const selected_item = selected_items().at(-1);
+    assert(selected_item !== undefined);
+
+    const condition = (
+      selected_item.discount_applied !== true &&
+      selected_item.discount !== undefined
+    );
+
+    return condition;
+  }
 </script>
 
 <svelte:body onkeydown={keybindings}/>
 
 <div class="grid grid-cols-[1fr_2fr] select-none cursor-default">
-  <Itemlist items={current_items} {menge} />
+  <div class="flex flex-col">
+    <Itemlist items={current_items} {menge} />
+    <div class="h-[20%] p-2 gap-2 grid grid-cols-3 grid-rows-2 items-center">
+      <ButtonSmall text={'Dummy'} />
+      <ButtonSmall text={'Dummy'} />
+      <ButtonSmall text={'Dummy'} />
+      <ButtonSmall text={'Dummy'} />
+      <ButtonSmall text={'Dummy'} />
+      <ButtonSmall text={'Rabatt'} onpointerdown={() => rabatt()} disabled={!discount_allowed()} />
+    </div>
+  </div>
   
   <div class="h-screen mx-10">
     <div class="flex flex-row gap-2">
@@ -204,10 +238,10 @@
     </div>
 
     <div class="flex flex-row h-[19lvh] gap-4 my-3">
-      <OperationButton text={'Storno'} onpointerdown={() => storno(current_items, selected_items())} />
-      <OperationButton text={'Bon Abbruch'} onpointerdown={() => {}} />
-      <OperationButton text={'Gebinde'} onpointerdown={() => gebinde(current_items, selected_items())} />
-      <OperationButton text={'Menge'} onpointerdown={() => apply_menge()}
+      <ButtonFull text={'Storno'} onpointerdown={() => storno(current_items, selected_items())} />
+      <ButtonFull text={'Bon Abbruch'} />
+      <ButtonFull text={'Gebinde'} onpointerdown={() => gebinde(current_items, selected_items())} />
+      <ButtonFull text={'Menge'} onpointerdown={() => apply_menge()}
       />
     </div>
 
