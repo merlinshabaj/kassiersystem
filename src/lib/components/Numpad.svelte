@@ -10,6 +10,10 @@
       id="{number.toString()}"
       class="h-[16lvh] bg-neutral-200 rounded text-7xl text-center active:bg-neutral-300 place-content-center"
       onpointerdown={() => {
+        if (number === ',') {
+          return;
+        }
+        
         input += number.toString();
       }}
     >

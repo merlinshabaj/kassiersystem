@@ -1,3 +1,5 @@
+import type { Item } from "./types";
+
 export function assert(
   condition: boolean,
   failure_message?: string,

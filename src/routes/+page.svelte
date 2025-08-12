@@ -14,17 +14,21 @@
       lidl_discount: 0.35,
       pfand: 0.25,
       storno: false,
+      selected: false,
+      gebinde: 6,
     },
     {
       name: 'Nuss Nougat Croissant',
       price: 1.19,
       lidl_plus_discount: 0.20,
       storno: false,
+      selected: false,
     },
     {
       name: 'Bioland Milch 3.8%',
       price: 1.19,
       storno: false,
+      selected: false,
     },
     {
       name: 'Manuka Honig',
@@ -48,6 +52,8 @@
   });
 
   let input: string = $state('');
+
+  let menge: number = $state(0);
 
   function simulate_click(element: HTMLElement) {
     element.dispatchEvent(new PointerEvent('pointerdown', {
@@ -85,11 +91,17 @@
       if (item !== undefined) {
         current_items.push(item);
         input = '';
+        
       }
     } else if (event.key === 'Enter') {
       const item = item_list.find(item => item.plu !== undefined && item.plu.toString() === input);
       if (item !== undefined) {
-        current_items.push(item);
+        const item_copy = { ...item };
+        if (menge > 1) {
+          item_copy.count = menge;
+          menge = 0;
+        }
+        current_items.push(item_copy);
         input = '';
       }
     }
@@ -100,6 +112,10 @@
       event.key === 'Escape'
     ) {
       input = '';
+    }
+
+    if (event.key === 'm' || event.key === '*') {
+      apply_menge();
     }
   }
 
@@ -120,7 +136,9 @@
     selected_items: Item[],
   ) {
     selected_items.forEach(item => {
-      item.count = item.gebinde;
+      const count = item.count ?? 1;
+      const gebinde = item.gebinde ?? 1;
+      item.count = count * gebinde;
       item.selected = false;
     });
 
@@ -133,12 +151,17 @@
       last_item.selected = true;
     }
   }
+
+  function apply_menge() {
+    menge = parseInt(input);
+    input = ''; 
+  }
 </script>
 
 <svelte:body onkeydown={keybindings}/>
 
 <div class="grid grid-cols-[1fr_2fr] select-none cursor-default">
-  <Itemlist items={current_items} />
+  <Itemlist items={current_items} {menge} />
   
   <div class="h-screen mx-10">
     <div class="flex flex-row gap-2">
@@ -148,6 +171,7 @@
         class="place-content-center bg-neutral-200 active:bg-neutral-300 my-2 border border-neutral-300 p-1.5 rounded text-lg"
         onpointerdown={() => {
           input = input.slice(0, -1);
+          menge = 0;
         }}
       >
       back
@@ -156,6 +180,7 @@
         class="place-content-center bg-neutral-200 active:bg-neutral-300 my-2 border border-neutral-300 p-1.5 rounded text-lg"
         onpointerdown={() => {
           input = '';
+          menge = 0;
         }}
       >
         C
@@ -164,14 +189,15 @@
 
     <div class="flex flex-row h-[19lvh] gap-4 my-3">
       <OperationButton text={'Storno'} onpointerdown={() => storno(current_items, selected_items())} />
-      <OperationButton text={'Rabatt'} onpointerdown={() => {}} />
+      <OperationButton text={'Bon Abbruch'} onpointerdown={() => {}} />
       <OperationButton text={'Gebinde'} onpointerdown={() => gebinde(current_items, selected_items())} />
-      <OperationButton text={'Menge'} onpointerdown={() => {}} />
+      <OperationButton text={'Menge'} onpointerdown={() => apply_menge()}
+      />
     </div>
 
     <div class="grid grid-cols-[4fr_1fr] gap-6">
       <Numpad bind:input={input} />
-      <RightButtons {current_items} bind:input={input} />
+      <RightButtons {current_items} bind:input={input} bind:menge={menge} />
     </div>
   </div>
 </div>

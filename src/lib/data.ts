@@ -173,6 +173,7 @@ const drinks: Item[] = [
     price: 0.15,
     plu: 701,
     pfand: 0.25,
+    gebinde: 9,
   }
 ];
 

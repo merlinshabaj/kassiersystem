@@ -2,7 +2,7 @@
   import { type Item } from '$lib/types';
   import { assert } from '$lib/utilities';
 
-  let { items }: { items: Item[] } = $props();
+  let { items, menge }: { items: Item[], menge: number } = $props();
   const total_price = $derived(
     items.reduce((sum, item) => {
       let price = sum;
@@ -46,9 +46,11 @@
       list.scrollTop = list.scrollHeight;
       previous_items_length = items.length;
 
+      // Unselect all items and select last one when item list updates
       items.forEach(item => item.selected = false);
-      select_item(items.length - 1);
+      select_item(items, items.length - 1);
     }
+
   });
 
   const price_format = new Intl.NumberFormat(
@@ -65,7 +67,10 @@
     return price_format.format(price);
   }
 
-  function select_item(index: number) {
+  function select_item(
+    items: Item[],
+    index: number,
+  ) {
     const item = items.at(index);
     assert(item !== undefined);
 
@@ -73,6 +78,7 @@
       return
     }
 
+    items.forEach(item => item.selected = false);
     item.selected = !item.selected;
   }
 </script>
@@ -91,25 +97,25 @@
           {item.storno ? 'line-through *:text-neutral-500' : ''}
           {item.selected ? 'bg-neutral-300' : ''}
         "
-        onpointerdown={() => select_item(i)}
+        onpointerdown={() => select_item(items, i)}
       >
       {#if item.count === undefined || item.count === 1}
         <span class="font-medium">{item.name}</span>
       {:else}
-        <span class="font-medium"><span class="font-bold">{item.count}x </span> {item.name}</span>
+        <span class="font-medium">{item.count}x {item.name}</span>
       {/if}
       <span class="font-medium text-right">{format_price(item.price * (item.count ?? 1))}</span>
         {#if item.pfand}
           <span class="">Pfand</span>
-          <span class="text-right">{format_price(item.pfand)}</span>
+          <span class="text-right">{format_price(item.pfand * (item.count ?? 1))}</span>
         {/if}
         {#if item.lidl_discount}
           <span class="text-red-500">Preisvorteil</span>
-          <span class="text-red-500">{format_price(-item.lidl_discount)}</span>
+          <span class="text-red-500">{format_price(-item.lidl_discount * (item.count ?? 1))}</span>
         {/if}
         {#if item.lidl_plus_discount}
           <span class="text-blue-500">Lidl Plus Rabatt</span>
-          <span class="text-blue-500">{format_price(-item.lidl_plus_discount)}</span>
+          <span class="text-blue-500">{format_price(-item.lidl_plus_discount * (item.count ?? 1))}</span>
         {/if}
         {#if item.discount}
           <span class="text-red-500">Rabatt</span>
@@ -117,6 +123,21 @@
         {/if}
       </div>
     {/each}
+
+    {#if menge > 1}
+      <div
+        class="
+          grid
+          grid-cols-[9fr_auto]
+          my-0.5
+          p-1
+          rounded-sm
+          bg-neutral-200
+        "
+      >
+      {menge}x
+      </div>
+    {/if}
   </div>
   
   <div class="flex flex-row justify-between font-bold">
