@@ -261,4 +261,5 @@ export const item_list: Item[] = [
   ...item,
   storno: false,
   selected: false,
+  count: 1,
 }));

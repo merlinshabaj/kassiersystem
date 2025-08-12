@@ -20,7 +20,7 @@
       }
 
       if (item.discount !== undefined) {
-        price += (item.price * (1 - item.discount));
+        price += ((item.price * (item.count ?? 1)) * (1 - item.discount));
       } else {
         price += item.price;
       }
@@ -93,8 +93,12 @@
         "
         onpointerdown={() => select_item(i)}
       >
+      {#if item.count === undefined || item.count === 1}
         <span class="font-medium">{item.name}</span>
-        <span class="font-medium text-right">{format_price(item.price)}</span>
+      {:else}
+        <span class="font-medium"><span class="font-bold">{item.count}x </span> {item.name}</span>
+      {/if}
+      <span class="font-medium text-right">{format_price(item.price * (item.count ?? 1))}</span>
         {#if item.pfand}
           <span class="">Pfand</span>
           <span class="text-right">{format_price(item.pfand)}</span>
@@ -109,7 +113,7 @@
         {/if}
         {#if item.discount}
           <span class="text-red-500">Rabatt</span>
-          <span class="text-red-500">{format_price(-item.price * item.discount)}</span>
+          <span class="text-red-500">{format_price(-item.price * item.discount * (item.count ?? 1))}</span>
         {/if}
       </div>
     {/each}

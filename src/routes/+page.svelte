@@ -103,13 +103,32 @@
     }
   }
 
-  function storno() {
-    selected_items().forEach(item => {
+  function storno(
+    items: Item[],
+    selected_items: Item[],
+  ) {
+    selected_items.forEach(item => {
       item.storno = true;
       item.selected = false;
     });
 
-    const last_item = current_items.findLast(item => item.storno === false);
+    select_last_item(items);
+  }
+  
+  function gebinde(
+    items: Item[],
+    selected_items: Item[],
+  ) {
+    selected_items.forEach(item => {
+      item.count = item.gebinde;
+      item.selected = false;
+    });
+
+    select_last_item(items)
+  }
+
+  function select_last_item(items: Item[]) {
+    const last_item = items.findLast(item => item.storno === false);
     if (last_item !== undefined) {
       last_item.selected = true;
     }
@@ -144,9 +163,9 @@
     </div>
 
     <div class="flex flex-row h-[19lvh] gap-4 my-3">
-      <OperationButton text={'Storno'} onpointerdown={storno} />
+      <OperationButton text={'Storno'} onpointerdown={() => storno(current_items, selected_items())} />
       <OperationButton text={'Rabatt'} onpointerdown={() => {}} />
-      <OperationButton text={'Gebinde'} onpointerdown={() => {}} />
+      <OperationButton text={'Gebinde'} onpointerdown={() => gebinde(current_items, selected_items())} />
       <OperationButton text={'Menge'} onpointerdown={() => {}} />
     </div>
 
