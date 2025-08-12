@@ -239,7 +239,7 @@
     </div>
   </div>
   
-  <div class="h-screen mx-10">
+  <div class="h-screen mx-10 flex flex-col">
     <div class="flex flex-row gap-2">
       <input type="text" bind:value={input} placeholder="PLU" class="w-full my-2 bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-xs p-1.5">
       
@@ -263,7 +263,7 @@
       </div>
     </div>
 
-    <div class="flex flex-row h-[19lvh] gap-4 my-3">
+    <div class="grow-2 flex flex-row gap-4 my-3">
       <ButtonFull text={'Storno'} disabled={!allow_storno()} onpointerdown={() => storno(current_items, selected_items())} />
       <ButtonFull text={'Bon Abbruch'} />
       <ButtonFull text={'Gebinde'} onpointerdown={() => gebinde(current_items, selected_items())} />
@@ -271,7 +271,7 @@
       />
     </div>
 
-    <div class="grid grid-cols-[4fr_1fr] gap-6">
+    <div class="grow-3 grid grid-cols-[4fr_1fr] gap-6 mb-4">
       <Numpad bind:input={input} />
       <RightButtons {current_items} bind:input={input} bind:menge={menge} />
     </div>
