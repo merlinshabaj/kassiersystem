@@ -9,40 +9,40 @@
   import { assert } from "$lib/utilities";
 
   let current_items: Item[] = $state([
-    {
-      name: 'Coca Cola',
-      price: 1.29,
-      lidl_discount: 0.35,
-      pfand: 0.25,
-      storno: false,
-      selected: false,
-      gebinde: 6,
-      discount: 0.2,
-    },
-    {
-      name: 'Nuss Nougat Croissant',
-      price: 1.19,
-      lidl_plus_discount: 0.20,
-      storno: false,
-      selected: false,
-      discount: undefined,
-    },
-    {
-      name: 'Bioland Milch 3.8%',
-      price: 1.19,
-      storno: false,
-      selected: false,
-      discount: 0.2,
-    },
-    {
-      name: 'Manuka Honig',
-      price: 15.99,
-      discount: 0.2,
-      discount_applied: true,
-      storno: false,
-      selected: true,
-      gebinde: 15,
-    },
+    // {
+    //   name: 'Coca Cola',
+    //   price: 1.29,
+    //   lidl_discount: 0.35,
+    //   pfand: 0.25,
+    //   storno: false,
+    //   selected: false,
+    //   gebinde: 6,
+    //   discount: 0.2,
+    // },
+    // {
+    //   name: 'Nuss Nougat Croissant',
+    //   price: 1.19,
+    //   lidl_plus_discount: 0.20,
+    //   storno: false,
+    //   selected: false,
+    //   discount: undefined,
+    // },
+    // {
+    //   name: 'Bioland Milch 3.8%',
+    //   price: 1.19,
+    //   storno: false,
+    //   selected: false,
+    //   discount: 0.2,
+    // },
+    // {
+    //   name: 'Manuka Honig',
+    //   price: 15.99,
+    //   discount: 0.2,
+    //   discount_applied: true,
+    //   storno: false,
+    //   selected: true,
+    //   gebinde: 15,
+    // },
   ]);
 
   let selected_items = $derived(() => {
@@ -133,12 +133,30 @@
     items: Item[],
     selected_items: Item[],
   ) {
+    if (!allow_storno()) {
+      return;
+    }
+
     selected_items.forEach(item => {
       item.storno = true;
       item.selected = false;
     });
 
     select_last_item(items);
+  }
+
+  function allow_storno(): boolean {
+    const selected_item = selected_items().at(0);
+    if (selected_item === undefined) {
+      return false;
+    }
+
+    const active_positions = current_items.filter(item => item.storno === false);
+    if (active_positions.length === 1) {
+      return false;
+    }
+
+    return true
   }
   
   function gebinde(
@@ -180,6 +198,11 @@
 
   function discount() {
     const selected_item = selected_items().at(-1);
+
+    if (!discount_allowed()) {
+      return;
+    }
+    
     assert(selected_item !== undefined);
 
     selected_item.discount_applied = true;
@@ -240,7 +263,7 @@
     </div>
 
     <div class="flex flex-row h-[19lvh] gap-4 my-3">
-      <ButtonFull text={'Storno'} onpointerdown={() => storno(current_items, selected_items())} />
+      <ButtonFull text={'Storno'} disabled={!allow_storno()} onpointerdown={() => storno(current_items, selected_items())} />
       <ButtonFull text={'Bon Abbruch'} />
       <ButtonFull text={'Gebinde'} onpointerdown={() => gebinde(current_items, selected_items())} />
       <ButtonFull text={'Menge'} onpointerdown={() => apply_menge()}

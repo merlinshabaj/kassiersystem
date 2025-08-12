@@ -1,6 +1,6 @@
 <script lang='ts'>
-  const { text, onpointerdown }:
-    { text: string, onpointerdown?: (() => void) } = $props();
+  const { text, onpointerdown, disabled}:
+    { text: string, onpointerdown?: (() => void), disabled?: boolean } = $props();
 
 </script>
 
@@ -13,9 +13,9 @@
     place-content-center
     border
     border-neutral-300
-    active:bg-neutral-300
     rounded-xs
     font-medium
+    { disabled ? 'text-neutral-600 border-none'  : 'active:bg-neutral-300' }
   "
   {onpointerdown}
 >{text}
