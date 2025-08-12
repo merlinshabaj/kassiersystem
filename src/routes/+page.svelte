@@ -203,7 +203,7 @@
       <ButtonSmall text={'Pfand'} disabled={true} />
       <ButtonSmall text={'Rabatt'} onpointerdown={() => discount()} disabled={!discount_allowed()} />
     </div>
-    <div class="w-full h-1 m-2 bg-neutral-400 dark:bg-neutral-800 rounded-2xl"></div>
+    <div class="h-1 m-2 bg-neutral-400 dark:bg-neutral-800 rounded-2xl"></div>
     <div class="flex flex-col gap-2 p-2">
       <ButtonSmall text={'Lidl Plus'} disabled={lidl_plus} onpointerdown={() => lidl_plus = true} />
       <ButtonSmall text={'Waare'} onpointerdown={() => {
