@@ -239,7 +239,7 @@
     </div>
   </div>
   
-  <div class="h-screen mx-10 flex flex-col">
+  <div class="h-[100dvh] mx-10 flex flex-col">
     <div class="flex flex-row gap-2">
       <input type="text" bind:value={input} placeholder="PLU" class="w-full my-2 bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-xs p-1.5">
       
