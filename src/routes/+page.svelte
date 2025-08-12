@@ -24,17 +24,28 @@
     {
       name: 'Bioland Milch 3.8%',
       price: 1.19,
-      storno: true,
+      storno: false,
     },
     {
       name: 'Manuka Honig',
       price: 15.99,
       discount: 0.2,
       storno: false,
+      selected: true,
+      gebinde: 15,
     },
   ]);
 
-  let selected_item: Item | undefined = $state();
+  let selected_items = $derived(() => {
+    const possible_items = current_items.map(item => {
+      if (item.selected === true) {
+        return item;
+      }
+      return undefined;
+    });
+
+    return possible_items.filter(item => item !== undefined);
+  });
 
   let input: string = $state('');
 
@@ -93,11 +104,15 @@
   }
 
   function storno() {
-    if (selected_item === undefined) {
-      alert('no selection');
-      return;
+    selected_items().forEach(item => {
+      item.storno = true;
+      item.selected = false;
+    });
+
+    const last_item = current_items.findLast(item => item.storno === false);
+    if (last_item !== undefined) {
+      last_item.selected = true;
     }
-    selected_item.storno = true;
   }
 </script>
 
@@ -130,7 +145,7 @@
 
     <div class="flex flex-row h-[19lvh] gap-4 my-3">
       <OperationButton text={'Storno'} onpointerdown={storno} />
-      <OperationButton text={'Bon abbruch'} onpointerdown={() => {}} />
+      <OperationButton text={'Rabatt'} onpointerdown={() => {}} />
       <OperationButton text={'Gebinde'} onpointerdown={() => {}} />
       <OperationButton text={'Menge'} onpointerdown={() => {}} />
     </div>

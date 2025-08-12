@@ -260,4 +260,5 @@ export const item_list: Item[] = [
 ].map(item => ({
   ...item,
   storno: false,
+  selected: false,
 }));

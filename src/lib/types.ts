@@ -3,6 +3,7 @@ export type Item = {
   price: number,
 
   storno?: boolean,
+  selected?: boolean,
 
   plu?: number,
   ean?: number,

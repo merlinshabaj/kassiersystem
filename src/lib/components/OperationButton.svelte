@@ -14,6 +14,7 @@
     border-neutral-300
     active:bg-neutral-300
     rounded-xs
+    font-medium
   "
   {onpointerdown}
 >{text}

@@ -2,7 +2,7 @@
   import { type Item } from '$lib/types';
   import { assert } from '$lib/utilities';
 
-  let { items, selected_item }: { items: Item[], selected_item: Item | undefined } = $props();
+  let { items }: { items: Item[] } = $props();
   const total_price = $derived(
     items.reduce((sum, item) => {
       let price = sum;
@@ -45,6 +45,9 @@
       assert(list !== null);
       list.scrollTop = list.scrollHeight;
       previous_items_length = items.length;
+
+      items.forEach(item => item.selected = false);
+      select_item(items.length - 1);
     }
   });
 
@@ -62,46 +65,48 @@
     return price_format.format(price);
   }
 
-  function select_item(event: PointerEvent) {
-    // const item_element = event. as HTMLElement;
-    // assert(item_element !== null);
+  function select_item(index: number) {
+    const item = items.at(index);
+    assert(item !== undefined);
 
-    // console.log('item:', item_element)
+    if (item.storno) {
+      return
+    }
+
+    item.selected = !item.selected;
   }
 </script>
 
 <div class="flex flex-col m-2">
   <div id="list" class="flex flex-col h-[50vh] overflow-scroll {hide_scrollbar ? 'scrollbar-hide' : ''}">
-    {#each items as item}
-      <div 
+    {#each items as item, i}
+      <div
         class="
           grid
           grid-cols-[9fr_auto]
-          my-0.5 rounded-sm
-          bg-neutral-200 p-1
-          active:bg-neutral-300
-          {item.storno ? 'line-through' : ''}
+          my-0.5
+          p-1
+          rounded-sm
+          bg-neutral-200
+          {item.storno ? 'line-through *:text-neutral-500' : ''}
+          {item.selected ? 'bg-neutral-300' : ''}
         "
-        onpointerdown={select_item}
+        onpointerdown={() => select_item(i)}
       >
         <span class="font-medium">{item.name}</span>
         <span class="font-medium text-right">{format_price(item.price)}</span>
-
         {#if item.pfand}
           <span class="">Pfand</span>
           <span class="text-right">{format_price(item.pfand)}</span>
         {/if}
-
         {#if item.lidl_discount}
           <span class="text-red-500">Preisvorteil</span>
           <span class="text-red-500">{format_price(-item.lidl_discount)}</span>
         {/if}
-
         {#if item.lidl_plus_discount}
           <span class="text-blue-500">Lidl Plus Rabatt</span>
           <span class="text-blue-500">{format_price(-item.lidl_plus_discount)}</span>
         {/if}
-
         {#if item.discount}
           <span class="text-red-500">Rabatt</span>
           <span class="text-red-500">{format_price(-item.price * item.discount)}</span>
