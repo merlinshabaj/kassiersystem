@@ -21,6 +21,8 @@
 
       if (item.discount !== undefined) {
         price += ((item.price * (item.count ?? 1)) * (1 - item.discount));
+      } else if (item.count !== undefined && item.count > 1) {
+        price += item.price * item.count;
       } else {
         price += item.price;
       }
