@@ -146,7 +146,7 @@
     {/if}
   </div>
   
-  <div class="flex flex-row justify-between font-bold">
+  <div class="flex flex-row justify-between font-bold mt-1">
     <span>Total:</span>
     <span class="flex flex-row gap-2">
       {format_price(total_price)}
