@@ -1,8 +1,8 @@
 <script lang='ts'>
-  import { type Item } from '$lib/types';
+  import { type Item_list } from '$lib/types';
   import { assert } from '$lib/utilities';
 
-  let { items, menge }: { items: Item[], menge: number } = $props();
+  let { items, menge }: { items: Item_list, menge: number } = $props();
   const total_price = $derived(
     items.reduce((sum, item) => {
       let price = sum;
@@ -74,7 +74,7 @@
   }
 
   function select_item(
-    items: Item[],
+    items: Item_list,
     index: number,
   ) {
     const item = items.at(index);

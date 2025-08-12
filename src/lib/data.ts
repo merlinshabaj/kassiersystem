@@ -1,4 +1,4 @@
-import { type Item } from '$lib/types';
+import { type Item, type Item_list } from '$lib/types';
 
 /* PLU first products */
 const bake_off: Item[] = [
@@ -79,55 +79,55 @@ const fruits: Item[] = [
     name: 'Cantaloupe Melone',
     price: 0.99,
     plu: 21,
-    weighing: true,
+    weighable: true,
   },
   {
     name: 'Galia Melone',
     price: 0.99,
     plu: 24,
-    weighing: true,
+    weighable: true,
   },
   {
     name: 'Zuckermelone',
     price: 0.99,
     plu: 108,
-    weighing: true,
+    weighable: true,
   },
   {
     name: 'Wassermelone',
     price: 0.99,
     plu: 78,
-    weighing: true,
+    weighable: true,
   },
   {
     name: 'Wassermelone breit',
     price: 0.99,
     plu: 79,
-    weighing: true,
+    weighable: true,
   },
   {
     name: 'Bio Baby Wasser',
     price: 0.99,
     plu: 19,
-    weighing: true,
+    weighable: true,
   },
   {
     name: 'Bananen',
     price: 0.99,
     plu: 55,
-    weighing: true,
+    weighable: true,
   },
   {
     name: 'Bio Fairtrade Bananen',
     price: 0.99,
     plu: 45,
-    weighing: true,
+    weighable: true,
   },
   {
     name: 'Fairtrade Bananen',
     price: 0.99,
     plu: 48,
-    weighing: true,
+    weighable: true,
   },
 ];
 
@@ -151,19 +151,19 @@ const vegetables: Item[] = [
     name: 'Cherry Strauchtomaten',
     price: 0.99,
     plu: 99,
-    weighing: true,
+    weighable: true,
   },
   {
     name: 'Tomaten',
     price: 0.99,
     plu: 97,
-    weighing: true,
+    weighable: true,
   },
   {
     name: 'Tomaten rosa',
     price: 0.99,
     plu: 46,
-    weighing: true,
+    weighable: true,
   },
 ];
 
@@ -251,7 +251,7 @@ const popular_ean: Item[] = [
   },
 ];
 
-export const item_list: Item[] = [
+export const item_list: Item_list = [
   ...bake_off,
   ...drinks,
   ...fruits,

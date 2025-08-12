@@ -4,45 +4,45 @@
   import RightButtons from "$lib/components/RightButtons.svelte";
   import ButtonFull from "$lib/components/ButtonFull.svelte";
   import ButtonSmall from "$lib/components/ButtonSmall.svelte";
-  import { type Item } from '$lib/types';
+  import { type Item_list } from '$lib/types';
   import { item_list } from "$lib/data";
   import { assert } from "$lib/utilities";
 
-  let current_items: Item[] = $state([
-    // {
-    //   name: 'Coca Cola',
-    //   price: 1.29,
-    //   lidl_discount: 0.35,
-    //   pfand: 0.25,
-    //   storno: false,
-    //   selected: false,
-    //   gebinde: 6,
-    //   discount: 0.2,
-    // },
-    // {
-    //   name: 'Nuss Nougat Croissant',
-    //   price: 1.19,
-    //   lidl_plus_discount: 0.20,
-    //   storno: false,
-    //   selected: false,
-    //   discount: undefined,
-    // },
-    // {
-    //   name: 'Bioland Milch 3.8%',
-    //   price: 1.19,
-    //   storno: false,
-    //   selected: false,
-    //   discount: 0.2,
-    // },
-    // {
-    //   name: 'Manuka Honig',
-    //   price: 15.99,
-    //   discount: 0.2,
-    //   discount_applied: true,
-    //   storno: false,
-    //   selected: true,
-    //   gebinde: 15,
-    // },
+  let current_items: Item_list = $state([
+    {
+      name: 'Coca Cola',
+      price: 1.29,
+      lidl_discount: 0.35,
+      pfand: 0.25,
+      storno: false,
+      selected: false,
+      gebinde: 6,
+      discount: 0.2,
+    },
+    {
+      name: 'Nuss Nougat Croissant',
+      price: 1.19,
+      lidl_plus_discount: 0.20,
+      storno: false,
+      selected: false,
+      discount: undefined,
+    },
+    {
+      name: 'Bioland Milch 3.8%',
+      price: 1.19,
+      storno: false,
+      selected: false,
+      discount: 0.2,
+    },
+    {
+      name: 'Manuka Honig',
+      price: 15.99,
+      discount: 0.2,
+      discount_applied: true,
+      storno: false,
+      selected: true,
+      gebinde: 15,
+    },
   ]);
 
   let selected_items = $derived(() => {
@@ -130,8 +130,8 @@
   }
 
   function storno(
-    items: Item[],
-    selected_items: Item[],
+    items: Item_list,
+    selected_items: Item_list,
   ) {
     if (!allow_storno()) {
       return;
@@ -160,8 +160,8 @@
   }
   
   function gebinde(
-    items: Item[],
-    selected_items: Item[],
+    items: Item_list,
+    selected_items: Item_list,
   ) {
     selected_items.forEach(item => {
       const count = item.count ?? 1;
@@ -173,7 +173,7 @@
     select_last_item(items)
   }
 
-  function select_last_item(items: Item[]) {
+  function select_last_item(items: Item_list) {
     const last_item = items.findLast(item => item.storno === false);
     if (last_item !== undefined) {
       last_item.selected = true;
@@ -185,7 +185,7 @@
 
     if (Number.isNaN(menge)) {
       if (selected_items().at(0) !== undefined) {
-        const selected_item: Item = { ...selected_items().at(0)! };
+        const selected_item = { ...selected_items().at(0)! };
         selected_item.discount = undefined; 
         current_items.push(selected_item);
       }

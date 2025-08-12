@@ -2,17 +2,21 @@ export type Item = {
   name: string,
   price: number,
 
-  storno?: boolean,
-  selected?: boolean,
-  count?: number,
-  discount_applied?: boolean,
-
   plu?: number,
   ean?: number,
-  weighing?: boolean,
+  weighable?: boolean,
   pfand?: number,
   gebinde?: number,
   discount?: number, // from 0 to 1 (percentage)
   lidl_plus_discount?: number, // in euro
   lidl_discount?: number, // in euro
-};
+}
+
+type Item_state = {
+  storno?: boolean,
+  selected?: boolean,
+  count?: number,
+  discount_applied?: boolean,
+}
+
+export type Item_list = (Item & Item_state)[];

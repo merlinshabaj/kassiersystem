@@ -1,10 +1,10 @@
 <script lang='ts'>
   import { item_list } from "$lib/data";
-  import { type Item } from '$lib/types';
+  import { type Item_list } from '$lib/types';
   import OperationButton from "./ButtonFull.svelte";
 
   let { current_items, input = $bindable(), menge = $bindable() }: 
-    { current_items: Item[], input: string, menge: number } = $props();
+    { current_items: Item_list, input: string, menge: number } = $props();
 
   function add_by_number(type: 'plu' | 'ean') {
     const item = (
