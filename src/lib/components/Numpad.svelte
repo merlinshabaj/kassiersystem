@@ -8,7 +8,7 @@
   {#each numbers as number}
     <div
       id="{number.toString()}"
-      class="h-[16lvh] bg-neutral-200 dark:bg-neutral-700 rounded text-7xl text-center active:bg-neutral-300 dark:active:bg-neutral-600 place-content-center"
+      class="h-[15vh] bg-neutral-200 dark:bg-neutral-700 rounded text-7xl text-center active:bg-neutral-300 dark:active:bg-neutral-600 place-content-center"
       onpointerdown={() => {
         if (number === ',') {
           return;
