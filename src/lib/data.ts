@@ -1,4 +1,4 @@
-import { type Item, type Item_list } from '$lib/types';
+import { type Item, type Item_list, type Offer } from '$lib/types';
 
 /* PLU first products */
 const bake_off: Item[] = [
@@ -56,6 +56,11 @@ const bake_off: Item[] = [
     name: 'Frikandel',
     price: 0.99,
     plu: 724,
+  },
+  {
+    name: 'Weltmeisterbrötchen',
+    price: 0.45,
+    plu: 992,
   },
 ];
 
@@ -182,12 +187,111 @@ const ean: Item[] = [
   {
     name: 'Bioland Milch 3.8%',
     price: 1.19,
-    ean: 123456,
+    ean: 0,
   },
   {
     name: 'Honig',
     price: 3.79,
-    ean: 213456,
+    ean: 0,
+  },
+  {
+    name: 'Kong Strong 0.25L',
+    price: 0.79,
+    pfand: 0.25,
+    ean: 0,
+  },
+  {
+    name: 'Fusilli 500g',
+    price: 0.89,
+    ean: 0,
+  },
+  {
+    name: 'Fusilli 500g',
+    price: 0.89,
+    ean: 0,
+  },
+  {
+    name: 'Spaghetti 500g',
+    price: 0.89,
+    ean: 0,
+  },
+  {
+    name: 'Tagliatelle 500g',
+    price: 0.89,
+    ean: 0,
+  },
+  {
+    name: 'Bio Spaghetti 500g',
+    price: 1.19,
+    ean: 0,
+  },
+  {
+    name: 'Bio Dinkel Penne 500g',
+    price: 1.89,
+    ean: 0,
+  },
+  {
+    name: 'Barilla Tomatensauce',
+    price: 1.09,
+    ean: 0,
+  },
+  {
+    name: 'Weizenmehl',
+    price: 0.39,
+    ean: 0,
+  },
+  {
+    name: 'Bio Vollk. Weizenehl',
+    price: 1.09,
+    ean: 0,
+  },
+  {
+    name: 'Hähnchenbrustfilet 500g',
+    price: 1.09,
+    ean: 0,
+  },
+  {
+    name: 'Vital & Fit Brot',
+    price: 1.29,
+    ean: 0,
+  },
+  {
+    name: 'Mehrkornschnitte',
+    price: 1.39,
+    ean: 0,
+  },
+  {
+    name: 'Odol Med 3 Extra White',
+    price: 1.49,
+    ean: 0,
+  },
+  {
+    name: 'Jägermeister',
+    price: 1.39,
+    ean: 0,
+    min_age: 18,
+  },
+  {
+    name: 'Rotkäppchen rosé',
+    price: 1.39,
+    lidl_discount: 0.20,
+    ean: 0,
+    min_age: 16,
+  },
+  {
+    name: 'Perlenbacher Radler',
+    price: 1.21,
+    lidl_discount: 0.20,
+    gebinde: 6,
+    ean: 0,
+    min_age: 16,
+  },
+  {
+    name: 'Perlenbacher 0.33L',
+    price: 1.16,
+    lidl_discount: 0.20,
+    ean: 0,
+    min_age: 16,
   },
 ];
 
@@ -219,6 +323,8 @@ const popular_ean: Item[] = [
     ean: 56,
     pfand: 0.25,
     gebinde: 6,
+    lidl_plus_discount: 0.07,
+    lidl_discount: 0.19,
   },
   {
     name: 'Volvic Touch Tee',
@@ -266,3 +372,38 @@ export const item_list: Item_list = [
   discount: 0.2,
   discount_applied: false,
 }));
+
+export const scan_items: Item_list = [
+  ...ean,
+  ...popular_ean,
+  ...drinks,
+].map(item => ({
+  ...item,
+  storno: false,
+  selected: false,
+  count: 1,
+  discount: 0.2,
+  discount_applied: false,
+  ean: Math.random() * 1000,
+}));
+
+export const offers: Offer[] = [
+  {
+    count: 3,
+    item: { plu: 928 },
+    discount: 1.29,
+    lidl_plus: false,
+  },
+  {
+    count: 6,
+    item: { plu: 992 },
+    discount: 0.90,
+    lidl_plus: true,
+  },
+  {
+    count: 1,
+    item: { ean: 0 },
+    discount: 0.23,
+    lidl_plus: true,
+  },
+];

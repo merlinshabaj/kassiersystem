@@ -10,6 +10,7 @@ export type Item = {
   discount?: number, // from 0 to 1 (percentage)
   lidl_plus_discount?: number, // in euro
   lidl_discount?: number, // in euro
+  min_age?: number,
 }
 
 type Item_state = {
@@ -20,3 +21,12 @@ type Item_state = {
 }
 
 export type Item_list = (Item & Item_state)[];
+
+type Item_identifier = { plu: number } | { ean: number };
+
+export type Offer = {
+  count: number,
+  item: Item_identifier,
+  discount: number,
+  lidl_plus: boolean,
+};

@@ -5,45 +5,10 @@
   import ButtonFull from "$lib/components/ButtonFull.svelte";
   import ButtonSmall from "$lib/components/ButtonSmall.svelte";
   import { type Item_list } from '$lib/types';
-  import { item_list } from "$lib/data";
+  import { item_list, scan_items } from "$lib/data";
   import { assert } from "$lib/utilities";
 
-  let current_items: Item_list = $state([
-    {
-      name: 'Coca Cola',
-      price: 1.29,
-      lidl_discount: 0.35,
-      pfand: 0.25,
-      storno: false,
-      selected: false,
-      gebinde: 6,
-      discount: 0.2,
-    },
-    {
-      name: 'Nuss Nougat Croissant',
-      price: 1.19,
-      lidl_plus_discount: 0.20,
-      storno: false,
-      selected: false,
-      discount: undefined,
-    },
-    {
-      name: 'Bioland Milch 3.8%',
-      price: 1.19,
-      storno: false,
-      selected: false,
-      discount: 0.2,
-    },
-    {
-      name: 'Manuka Honig',
-      price: 15.99,
-      discount: 0.2,
-      discount_applied: true,
-      storno: false,
-      selected: true,
-      gebinde: 15,
-    },
-  ]);
+  let current_items: Item_list = $state([]);
 
   let selected_items = $derived(() => {
     const possible_items = current_items.map(item => {
@@ -57,10 +22,9 @@
   });
 
   let input: string = $state('');
-
   let menge: number = $state(0);
-
   let lidl_plus: boolean = $state(false);
+  let customer_age: number = $state(0);
 
   function simulate_click(element: HTMLElement) {
     element.dispatchEvent(new PointerEvent('pointerdown', {
@@ -242,7 +206,9 @@
     <div class="w-full h-1 m-2 bg-neutral-400 dark:bg-neutral-800 rounded-2xl"></div>
     <div class="flex flex-col gap-2 p-2">
       <ButtonSmall text={'Lidl Plus'} disabled={lidl_plus} onpointerdown={() => lidl_plus = true} />
-      <ButtonSmall text={'Waare'} />
+      <ButtonSmall text={'Waare'} onpointerdown={() => {
+        current_items.push(scan_items[Math.floor(Math.random() * scan_items.length)])
+      }}/>
     </div>
   </div>
   
