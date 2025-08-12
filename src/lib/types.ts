@@ -23,7 +23,7 @@ type Item_state = {
 
 export type Item_list = (Item & Item_state)[];
 
-type Item_identifier = { plu: number } | { ean: number };
+type Item_identifier = [type: 'plu' | 'ean', number: number];
 
 export type Offer = {
   count: number,

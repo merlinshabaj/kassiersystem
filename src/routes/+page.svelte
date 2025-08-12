@@ -5,7 +5,7 @@
   import ButtonFull from "$lib/components/ButtonFull.svelte";
   import ButtonSmall from "$lib/components/ButtonSmall.svelte";
   import { type Item_list } from '$lib/types';
-  import { item_list, scan_items } from "$lib/data";
+  import { item_list, offers, scan_items } from "$lib/data";
   import { assert } from "$lib/utilities";
 
   let current_items: Item_list = $state([]);
@@ -24,7 +24,50 @@
   let input: string = $state('');
   let menge: number = $state(0);
   let lidl_plus: boolean = $state(false);
+  // TODO
   let customer_age: number = $state(0);
+
+  $effect(() => {
+    offers.forEach(offer => {
+      let count = 0;
+      if (offer.item[0] === 'plu') {
+        current_items.forEach(item => {
+          if (item.plu === offer.item[1] && !item.storno) {
+            count += item.count ?? 1;
+          }
+        });
+      } else {
+        current_items.forEach(item => {
+          if (item.ean === offer.item[1]) {
+            count += item.count ?? 1;
+          }
+        });
+      }
+
+      const is_eligible = count >= offer.count;
+      if (is_eligible) {
+        const final_discount = offer.discount * Math.floor(count / offer.count);
+        console.log(final_discount);
+
+        const first_item = current_items.find(item => {
+          if (offer.item[0] === 'plu') {
+            return item.plu === offer.item[1] && !item.storno;
+          } else {
+            return item.ean === offer.item[1] && !item.storno;
+          }
+        });
+
+        assert(first_item !== undefined);
+
+        if (offer.lidl_plus) {
+          first_item.lidl_plus_discount = final_discount / (first_item.count ?? 1);
+          return;
+        }
+
+        first_item.lidl_discount = final_discount / (first_item.count ?? 1);
+      }
+    })
+  });
 
   function simulate_click(element: HTMLElement) {
     element.dispatchEvent(new PointerEvent('pointerdown', {
@@ -168,10 +211,10 @@
 
     if (Number.isNaN(menge)) {
       if (selected_items().at(0) !== undefined) {
-        const selected_item = { ...selected_items().at(0)! };
-        selected_item.discount_applied = undefined;
-        selected_item.count = undefined;
-        current_items.push(selected_item);
+        const selected_item = selected_items().at(0)!;
+        const item = item_list.find(item => item.name === selected_item.name);
+        assert(item !== undefined);
+        current_items.push(item);
       }
 
       return;
@@ -255,9 +298,9 @@
 
     <div class="grow-2 flex flex-row gap-4 my-3">
       <ButtonFull text={'Storno'} disabled={!allow_storno()} onpointerdown={() => storno(current_items, selected_items())} />
-      <ButtonFull text={'Bon Abbruch'} disabled={current_items.length === 0} onpointerdown={() => current_items = []}/>
+      <ButtonFull text={'Bon Abbruch'} disabled={current_items.length === 0 && lidl_plus === false } onpointerdown={() => {current_items = []; lidl_plus = false;}}/>
       <ButtonFull text={'Gebinde'} disabled={current_items.length === 0 || allow_gebinde()} onpointerdown={() => gebinde(current_items, selected_items())} />
-      <ButtonFull text={'Menge'} disabled={current_items.length === 0} onpointerdown={() => apply_menge()}
+      <ButtonFull text={'Menge'} disabled={current_items.length === 0 && input === ''} onpointerdown={() => apply_menge()}
       />
     </div>
 

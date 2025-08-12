@@ -390,19 +390,19 @@ export const scan_items: Item_list = [
 export const offers: Offer[] = [
   {
     count: 3,
-    item: { plu: 928 },
+    item: ['plu', 928],
     discount: 1.29,
     lidl_plus: false,
   },
   {
     count: 6,
-    item: { plu: 992 },
+    item: ['plu', 992],
     discount: 0.90,
     lidl_plus: true,
   },
   {
     count: 1,
-    item: { ean: 0 },
+    item: ['ean', 0],
     discount: 0.23,
     lidl_plus: true,
   },
