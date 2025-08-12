@@ -265,7 +265,12 @@
     </div>
     <div class="h-1 m-2 bg-neutral-400 dark:bg-neutral-800 rounded-2xl"></div>
     <div class="flex flex-col gap-2 p-2">
-      <ButtonSmall text={'Lidl Plus'} disabled={lidl_plus} onpointerdown={() => lidl_plus = true} />
+      <div class="flex flex-row gap-2 justify-between">
+        <span class="grow">
+          <ButtonSmall text={'Lidl Plus'} disabled={lidl_plus} onpointerdown={() => lidl_plus = true} />
+        </span>
+        <ButtonSmall text={'Lidl Plus Storno'} disabled={!lidl_plus} onpointerdown={() => lidl_plus = false} />
+      </div>
       <ButtonSmall text={'Waare'} onpointerdown={() => {
         current_items.push(scan_items[Math.floor(Math.random() * scan_items.length)])
       }}/>
