@@ -154,6 +154,17 @@
 
   function apply_menge() {
     menge = parseInt(input);
+
+    if (Number.isNaN(menge)) {
+      if (selected_items().at(0) !== undefined) {
+        const selected_item: Item = { ...selected_items().at(0)! };
+        selected_item.discount = undefined; 
+        current_items.push(selected_item);
+      }
+
+      return;
+    }
+
     input = ''; 
   }
 </script>
