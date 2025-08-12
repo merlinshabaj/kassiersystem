@@ -53,6 +53,11 @@
       select_item(items, items.length - 1);
     }
 
+    if (menge > 1) {
+      assert(list !== null);
+      list.scrollTop = list.scrollHeight;
+      previous_items_length = items.length;
+    }
   });
 
   const price_format = new Intl.NumberFormat(

@@ -1,4 +1,6 @@
 <script lang="ts">
+	export const ssr = false;
+
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	
