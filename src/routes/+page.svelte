@@ -187,7 +187,9 @@
 
   function discount_allowed(): boolean {
     const selected_item = selected_items().at(-1);
-    assert(selected_item !== undefined);
+    if (selected_item === undefined) {
+      return false;
+    }
 
     const condition = (
       selected_item.discount_applied !== true &&
