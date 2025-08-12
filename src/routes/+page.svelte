@@ -200,7 +200,7 @@
       <ButtonSmall text={''} />
       <ButtonSmall text={''} />
       <ButtonSmall text={''} />
-      <ButtonSmall text={''} />
+      <ButtonSmall text={'Pfand'} disabled={true} />
       <ButtonSmall text={'Rabatt'} onpointerdown={() => discount()} disabled={!discount_allowed()} />
     </div>
     <div class="w-full h-1 m-2 bg-neutral-400 dark:bg-neutral-800 rounded-2xl"></div>
@@ -238,9 +238,9 @@
 
     <div class="grow-2 flex flex-row gap-4 my-3">
       <ButtonFull text={'Storno'} disabled={!allow_storno()} onpointerdown={() => storno(current_items, selected_items())} />
-      <ButtonFull text={'Bon Abbruch'} />
-      <ButtonFull text={'Gebinde'} onpointerdown={() => gebinde(current_items, selected_items())} />
-      <ButtonFull text={'Menge'} onpointerdown={() => apply_menge()}
+      <ButtonFull text={'Bon Abbruch'} disabled={current_items.length === 0} onpointerdown={() => current_items = []}/>
+      <ButtonFull text={'Gebinde'} disabled={current_items.length === 0} onpointerdown={() => gebinde(current_items, selected_items())} />
+      <ButtonFull text={'Menge'} disabled={current_items.length === 0} onpointerdown={() => apply_menge()}
       />
     </div>
 
