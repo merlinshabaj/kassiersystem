@@ -178,7 +178,7 @@
     input = ''; 
   }
 
-  function rabatt() {
+  function discount() {
     const selected_item = selected_items().at(-1);
     assert(selected_item !== undefined);
 
@@ -209,7 +209,7 @@
       <ButtonSmall text={'Dummy'} />
       <ButtonSmall text={'Dummy'} />
       <ButtonSmall text={'Dummy'} />
-      <ButtonSmall text={'Rabatt'} onpointerdown={() => rabatt()} disabled={!discount_allowed()} />
+      <ButtonSmall text={'Rabatt'} onpointerdown={() => discount()} disabled={!discount_allowed()} />
     </div>
   </div>
   
