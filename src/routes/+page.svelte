@@ -272,7 +272,7 @@
   <div class="flex flex-col">
     <Itemlist items={current_items} {menge} {lidl_plus} />
     <div class="h-[20%] p-2 gap-2 grid grid-cols-[auto_auto_auto] grid-rows-2 items-center">
-      <ButtonSmall text={'Bon Rückstellung'} disabled={true} />
+      <ButtonSmall text={'Bonrückstellung'} disabled={true} />
       <ButtonSmall text={''} />
       <ButtonSmall text={''} />
       <ButtonSmall text={'Sodastream'} onpointerdown={() => add_pfand('Sodastream Pfand')} />
