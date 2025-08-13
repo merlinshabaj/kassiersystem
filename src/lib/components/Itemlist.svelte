@@ -146,9 +146,9 @@
     {/if}
   </div>
   
-  <div class="flex flex-row justify-between font-bold mt-1">
-    <span>Total:</span>
-    <span class="flex flex-row gap-2">
+  <div class="flex flex-row justify-between items-center h-8 font-bold mt-1">
+    <span class="h-fit">Total:</span>
+    <span class="h-fit flex flex-row gap-2 items-center">
       {format_price(total_price)}
       {#if lidl_plus}
         <svg class="rounded border" xmlns="http://www.w3.org/2000/svg" version="1.1" width="30" height="30" viewBox="0 0 60 60">

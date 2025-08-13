@@ -255,11 +255,11 @@
 <div class="grid grid-cols-[1fr_2fr] select-none cursor-default dark:text-white">
   <div class="flex flex-col">
     <Itemlist items={current_items} {menge} {lidl_plus} />
-    <div class="h-[20%] p-2 gap-2 grid grid-cols-3 grid-rows-2 items-center">
+    <div class="h-[20%] p-2 gap-2 grid grid-cols-[auto_auto_auto] grid-rows-2 items-center">
       <ButtonSmall text={''} />
       <ButtonSmall text={''} />
       <ButtonSmall text={''} />
-      <ButtonSmall text={''} />
+      <ButtonSmall text={'Bon Rückstellung'} disabled={true} />
       <ButtonSmall text={'Pfand'} disabled={true} />
       <ButtonSmall text={'Rabatt'} onpointerdown={() => discount()} disabled={!discount_allowed()} />
     </div>
@@ -271,9 +271,10 @@
         </span>
         <ButtonSmall text={'Lidl Plus Storno'} disabled={!lidl_plus} onpointerdown={() => lidl_plus = false} />
       </div>
-      <ButtonSmall text={'Waare'} onpointerdown={() => {
+      <ButtonSmall text={'Waare scannen'} onpointerdown={() => {
         current_items.push(scan_items[Math.floor(Math.random() * scan_items.length)])
       }}/>
+      <ButtonSmall text={'Rückstellungen'} disabled={true} />
     </div>
   </div>
   
