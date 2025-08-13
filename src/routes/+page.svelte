@@ -5,7 +5,7 @@
   import ButtonFull from "$lib/components/ButtonFull.svelte";
   import ButtonSmall from "$lib/components/ButtonSmall.svelte";
   import { type Item_list } from '$lib/types';
-  import { item_list, offers, scan_items } from "$lib/data";
+  import { item_list, offers, scan_items, special_items } from "$lib/data";
   import { assert } from "$lib/utilities";
 
   let current_items: Item_list = $state([]);
@@ -196,7 +196,7 @@
       return;
     }
 
-    return selected_item.gebinde_applied;
+    return !selected_item.gebinde_applied && selected_item.gebinde !== undefined;
   }
 
   function select_last_item(items: Item_list) {
@@ -248,6 +248,22 @@
 
     return condition;
   }
+
+  function add_pfand(
+    type: 'Sodastream Pfand' | 'Pfand',
+  ) {
+    const pfand = special_items.find(item => item.name === type);
+    assert(pfand !== undefined);
+
+    const pfand_copy = {...pfand};
+
+    if (menge >= 1) {
+      pfand_copy.count = menge;
+      menge = 0;
+    }
+
+    current_items.push(pfand_copy);
+  }
 </script>
 
 <svelte:body onkeydown={keybindings}/>
@@ -256,11 +272,11 @@
   <div class="flex flex-col">
     <Itemlist items={current_items} {menge} {lidl_plus} />
     <div class="h-[20%] p-2 gap-2 grid grid-cols-[auto_auto_auto] grid-rows-2 items-center">
-      <ButtonSmall text={''} />
-      <ButtonSmall text={''} />
-      <ButtonSmall text={''} />
       <ButtonSmall text={'Bon Rückstellung'} disabled={true} />
-      <ButtonSmall text={'Pfand'} disabled={true} />
+      <ButtonSmall text={''} />
+      <ButtonSmall text={''} />
+      <ButtonSmall text={'Sodastream'} onpointerdown={() => add_pfand('Sodastream Pfand')} />
+      <ButtonSmall text={'Pfand'} disabled={false} onpointerdown={() => add_pfand('Pfand')}/>
       <ButtonSmall text={'Rabatt'} onpointerdown={() => discount()} disabled={!discount_allowed()} />
     </div>
     <div class="h-1 m-2 bg-neutral-400 dark:bg-neutral-800 rounded-2xl"></div>
@@ -305,7 +321,7 @@
     <div class="grow-2 flex flex-row gap-4 my-3">
       <ButtonFull text={'Storno'} disabled={!allow_storno()} onpointerdown={() => storno(current_items, selected_items())} />
       <ButtonFull text={'Bon Abbruch'} disabled={current_items.length === 0 && lidl_plus === false } onpointerdown={() => {current_items = []; lidl_plus = false;}}/>
-      <ButtonFull text={'Gebinde'} disabled={current_items.length === 0 || allow_gebinde()} onpointerdown={() => gebinde(current_items, selected_items())} />
+      <ButtonFull text={'Gebinde'} disabled={current_items.length === 0 || !allow_gebinde()} onpointerdown={() => gebinde(current_items, selected_items())} />
       <ButtonFull text={'Menge'} disabled={current_items.length === 0 && input === ''} onpointerdown={() => apply_menge()}
       />
     </div>

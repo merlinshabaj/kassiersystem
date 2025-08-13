@@ -357,6 +357,23 @@ const popular_ean: Item[] = [
   },
 ];
 
+/* Special items / services */
+export const special_items: Item_list = [
+  {
+    name: 'Pfand',
+    price: -0.25,
+  },
+  {
+    name: 'Sodastream Pfand',
+    price: -14.99,
+  },
+  {
+    name: 'Versandkostengutschein',
+    price: 0.00,
+    plu: 840,
+  },
+];
+
 export const item_list: Item_list = [
   ...bake_off,
   ...drinks,
