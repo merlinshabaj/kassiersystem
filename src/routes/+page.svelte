@@ -164,27 +164,45 @@
     items: Item_list,
     selected_item: (Item & Item_state) | undefined,
   ) {
-    if (selected_item === undefined) {
+    if (!allow_gebinde()) {
       return;
     }
 
-    if (selected_item.gebinde_applied) {
+    if (selected_item === undefined) {
+      apply_gebinde(active_items.at(-1)!); // can be asserted since allow gebinde already checked for that
       return;
     }
     
-    const count = selected_item.count ?? 1;
-    const gebinde = selected_item.gebinde ?? 1;
-    selected_item.count = count * gebinde;
-    selected_item.selected = false;
-    selected_item.gebinde_applied = true;
+    apply_gebinde(selected_item);
+    
+    function apply_gebinde(item: (Item & Item_state)) {
+      const count = item.count ?? 1;
+      const gebinde = item.gebinde ?? 1;
+      item.count = count * gebinde;
+      item.selected = false;
+      item.gebinde_applied = true;
+    }
   }
 
-  function allow_gebinde() {
-    if (selected_item === undefined) {
-      return;
+  function allow_gebinde(): boolean {
+    const last_item = active_items.at(-1);
+    if (
+      last_item !== undefined &&
+      last_item.gebinde !== undefined &&
+      !last_item.gebinde_applied
+    ) {
+      return true;
     }
 
-    return !selected_item.gebinde_applied && selected_item.gebinde !== undefined;
+    if (selected_item === undefined) {
+      return false;
+    }
+
+    if (selected_item.gebinde_applied || selected_item.gebinde === undefined) {
+      return false;
+    }
+
+    return true;
   }
 
   function select_last_item() {
@@ -311,7 +329,7 @@
     <div class="grow-2 flex flex-row gap-4 my-3">
       <ButtonFull text={'Storno'} disabled={!allow_storno()} onpointerdown={() => storno(current_items, selected_item)} />
       <ButtonFull text={'Bon Abbruch'} disabled={current_items.length === 0 && lidl_plus === false } onpointerdown={() => {current_items = []; lidl_plus = false;}}/>
-      <ButtonFull text={'Gebinde'} disabled={current_items.length === 0 || !allow_gebinde()} onpointerdown={() => gebinde(current_items, selected_item)} />
+      <ButtonFull text={'Gebinde'} disabled={!allow_gebinde()} onpointerdown={() => gebinde(current_items, selected_item)} />
       <ButtonFull text={'Menge'} disabled={current_items.length === 0 && input === ''} onpointerdown={() => apply_menge()}
       />
     </div>
