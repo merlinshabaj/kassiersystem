@@ -4,22 +4,13 @@
   import RightButtons from "$lib/components/RightButtons.svelte";
   import ButtonFull from "$lib/components/ButtonFull.svelte";
   import ButtonSmall from "$lib/components/ButtonSmall.svelte";
-  import { type Item_list } from '$lib/types';
+  import { type Item, type Item_list, type Item_state } from '$lib/types';
   import { item_list, offers, scan_items, special_items } from "$lib/data";
   import { assert } from "$lib/utilities";
 
   let current_items: Item_list = $state([]);
-
-  let selected_items = $derived(() => {
-    const possible_items = current_items.map(item => {
-      if (item.selected === true) {
-        return item;
-      }
-      return undefined;
-    });
-
-    return possible_items.filter(item => item !== undefined);
-  });
+  const active_items: Item_list = $derived(current_items.filter(item => item.storno === false));
+  const selected_item = $derived(current_items.filter(item => item.selected === true).at(0));
 
   let input: string = $state('');
   let menge: number = $state(0);
@@ -140,28 +131,29 @@
 
   function storno(
     items: Item_list,
-    selected_items: Item_list,
+    selected_item: (Item & Item_state) | undefined,
   ) {
     if (!allow_storno()) {
       return;
     }
+    
+    if (selected_item === undefined) {
+      select_last_item();
+      return;
+    }
 
-    selected_items.forEach(item => {
-      item.storno = true;
-      item.selected = false;
-    });
-
-    select_last_item(items);
+    selected_item.storno = true;
+    selected_item.selected = false;
   }
 
   function allow_storno(): boolean {
-    const selected_item = selected_items().at(0);
-    if (selected_item === undefined) {
+    if (selected_item === undefined && active_items.length > 1) {
+      return true;
+    } else if (selected_item === undefined) {
       return false;
     }
 
-    const active_positions = current_items.filter(item => item.storno === false);
-    if (active_positions.length === 1) {
+    if (active_items.length === 1) {
       return false;
     }
 
@@ -170,9 +162,8 @@
   
   function gebinde(
     items: Item_list,
-    selected_items: Item_list,
+    selected_item: (Item & Item_state) | undefined,
   ) {
-    const selected_item = selected_items.at(0);
     if (selected_item === undefined) {
       return;
     }
@@ -186,12 +177,9 @@
     selected_item.count = count * gebinde;
     selected_item.selected = false;
     selected_item.gebinde_applied = true;
-
-    select_last_item(items)
   }
 
   function allow_gebinde() {
-    const selected_item = selected_items().at(0);
     if (selected_item === undefined) {
       return;
     }
@@ -199,8 +187,8 @@
     return !selected_item.gebinde_applied && selected_item.gebinde !== undefined;
   }
 
-  function select_last_item(items: Item_list) {
-    const last_item = items.findLast(item => item.storno === false);
+  function select_last_item() {
+    const last_item = active_items.at(-1);
     if (last_item !== undefined) {
       last_item.selected = true;
     }
@@ -210,8 +198,7 @@
     menge = parseInt(input);
 
     if (Number.isNaN(menge)) {
-      if (selected_items().at(0) !== undefined) {
-        const selected_item = selected_items().at(0)!;
+      if (selected_item !== undefined) {
         const item = item_list.find(item => item.name === selected_item.name);
         assert(item !== undefined);
         current_items.push(item);
@@ -224,8 +211,6 @@
   }
 
   function discount() {
-    const selected_item = selected_items().at(-1);
-
     if (!discount_allowed()) {
       return;
     }
@@ -236,7 +221,6 @@
   }
 
   function discount_allowed(): boolean {
-    const selected_item = selected_items().at(-1);
     if (selected_item === undefined) {
       return false;
     }
@@ -319,9 +303,9 @@
     </div>
 
     <div class="grow-2 flex flex-row gap-4 my-3">
-      <ButtonFull text={'Storno'} disabled={!allow_storno()} onpointerdown={() => storno(current_items, selected_items())} />
+      <ButtonFull text={'Storno'} disabled={!allow_storno()} onpointerdown={() => storno(current_items, selected_item)} />
       <ButtonFull text={'Bon Abbruch'} disabled={current_items.length === 0 && lidl_plus === false } onpointerdown={() => {current_items = []; lidl_plus = false;}}/>
-      <ButtonFull text={'Gebinde'} disabled={current_items.length === 0 || !allow_gebinde()} onpointerdown={() => gebinde(current_items, selected_items())} />
+      <ButtonFull text={'Gebinde'} disabled={current_items.length === 0 || !allow_gebinde()} onpointerdown={() => gebinde(current_items, selected_item)} />
       <ButtonFull text={'Menge'} disabled={current_items.length === 0 && input === ''} onpointerdown={() => apply_menge()}
       />
     </div>

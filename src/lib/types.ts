@@ -13,7 +13,7 @@ export type Item = {
   min_age?: number,
 }
 
-type Item_state = {
+export type Item_state = {
   storno?: boolean,
   selected?: boolean,
   count?: number,

@@ -48,7 +48,6 @@
       list.scrollTop = list.scrollHeight;
       previous_items_length = items.length;
 
-      
       items.forEach(item => item.selected = false);
     }
 
