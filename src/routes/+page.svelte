@@ -18,6 +18,9 @@
   // TODO
   let customer_age: number = $state(0);
 
+  let show_weight_input: boolean = $state(false);
+  let weighing_item: (Item & Item_state) | undefined = $state();
+
   $effect(() => {
     offers.forEach(offer => {
       let count = 0;
@@ -84,7 +87,7 @@
     if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(event.key)) {
       const element = document.getElementById(event.key);
       assert(element !== null);
-      simulate_click(element);
+      input += event.key;
     }
 
     if (event.key === 'Backspace') {
@@ -129,14 +132,7 @@
     }
   }
 
-  function storno(
-    items: Item_list,
-    selected_item: (Item & Item_state) | undefined,
-  ) {
-    if (!allow_storno()) {
-      return;
-    }
-    
+  function storno() {    
     if (selected_item === undefined) {
       select_last_item();
       return;
@@ -160,14 +156,7 @@
     return true
   }
   
-  function gebinde(
-    items: Item_list,
-    selected_item: (Item & Item_state) | undefined,
-  ) {
-    if (!allow_gebinde()) {
-      return;
-    }
-
+  function gebinde() {
     if (selected_item === undefined) {
       apply_gebinde(active_items.at(-1)!); // can be asserted since allow gebinde already checked for that
       return;
@@ -271,34 +260,89 @@
 <svelte:body onkeydown={keybindings}/>
 
 <div class="grid grid-cols-[1fr_2fr] select-none cursor-default dark:text-white">
-  <div class="flex flex-col">
-    <Itemlist items={current_items} {menge} {lidl_plus} />
-    <div class="h-[20%] p-2 gap-2 grid grid-cols-[auto_auto_auto] grid-rows-2 items-center">
-      <ButtonSmall text={'Bonrückstellung'} disabled={true} />
-      <ButtonSmall text={''} />
-      <ButtonSmall text={''} />
-      <ButtonSmall text={'Sodastream'} onpointerdown={() => add_pfand('Sodastream Pfand')} />
-      <ButtonSmall text={'Pfand'} disabled={false} onpointerdown={() => add_pfand('Pfand')}/>
-      <ButtonSmall text={'Rabatt'} onpointerdown={() => discount()} disabled={!discount_allowed()} />
-    </div>
-    <div class="h-1 m-2 bg-neutral-400 dark:bg-neutral-800 rounded-2xl"></div>
-    <div class="flex flex-col gap-2 p-2">
-      <div class="flex flex-row gap-2 justify-between">
+  {#if show_weight_input}
+    <div 
+      onclose={() => show_weight_input = false}
+
+      class="
+        flex
+        flex-col
+        gap-2
+        items-start
+        justify-start
+        w-full
+        m-auto
+        p-4
+        bg-neutral-100
+        dark:bg-neutral-900
+        rounded
+        dark:text-white
+      "
+    >
+      <span class="flex flex-col w-full">
+        <label for="weight" class="font-medium">Gewicht</label>
+        <input
+          type="text"
+          name="weight"
+          placeholder="Gramm"
+          value={input}
+
+          class="
+            placeholder:text-right
+            bg-neutral-200
+            dark:bg-neutral-800
+
+            border-neutral-300
+            dark:border-neutral-700
+            rounded
+            p-1
+          "
+        >
+      </span>
+      <span class="flex flex-row gap-2 w-full">
         <span class="grow">
-          <ButtonSmall text={'Lidl Plus'} disabled={lidl_plus} onpointerdown={() => lidl_plus = true} />
+          <ButtonSmall text={'Bestätigen'} disabled={input === ''} onpointerdown={() => {
+            assert(weighing_item !== undefined);
+            weighing_item.weight = parseInt(input) / 1000;
+            current_items.push(weighing_item);
+            weighing_item = undefined;
+            input = '';
+            show_weight_input = false;
+          }} />
         </span>
-        <ButtonSmall text={'Lidl Plus Storno'} disabled={!lidl_plus} onpointerdown={() => lidl_plus = false} />
-      </div>
-      <ButtonSmall text={'Waare scannen'} onpointerdown={() => {
-        current_items.push(scan_items[Math.floor(Math.random() * scan_items.length)])
-      }}/>
-      <ButtonSmall text={'Rückstellungen'} disabled={true} />
+        <ButtonSmall text={'Abbrechen'} onpointerdown={() => show_weight_input = false} />
+      </span>
     </div>
-  </div>
+  {:else}
+    <div class="flex flex-col">
+      <Itemlist items={current_items} {menge} {lidl_plus} />
+      <div class="h-[20%] p-2 gap-2 grid grid-cols-[auto_auto_auto] grid-rows-2 items-center">
+        <ButtonSmall text={'Bonrückstellung'} disabled={true} />
+        <ButtonSmall text={''} />
+        <ButtonSmall text={''} />
+        <ButtonSmall text={'Sodastream'} onpointerdown={() => add_pfand('Sodastream Pfand')} />
+        <ButtonSmall text={'Pfand'} disabled={false} onpointerdown={() => add_pfand('Pfand')}/>
+        <ButtonSmall text={'Rabatt'} onpointerdown={() => discount()} disabled={!discount_allowed()} />
+      </div>
+      <div class="h-1 m-2 bg-neutral-400 dark:bg-neutral-800 rounded-2xl"></div>
+      <div class="flex flex-col gap-2 p-2">
+        <div class="flex flex-row gap-2 justify-between">
+          <span class="grow">
+            <ButtonSmall text={'Lidl Plus'} disabled={lidl_plus} onpointerdown={() => lidl_plus = true} />
+          </span>
+          <ButtonSmall text={'Lidl Plus Storno'} disabled={!lidl_plus} onpointerdown={() => lidl_plus = false} />
+        </div>
+        <ButtonSmall text={'Waare scannen'} onpointerdown={() => {
+          current_items.push(scan_items[Math.floor(Math.random() * scan_items.length)])
+        }}/>
+        <ButtonSmall text={'Rückstellungen'} disabled={true} />
+      </div>
+    </div>
+  {/if}
   
   <div class="h-[100dvh] mx-10 flex flex-col">
     <div class="flex flex-row gap-2">
-      <input type="text" bind:value={input} placeholder="PLU" class="w-full my-2 bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-xs p-1.5">
+      <input type="text" bind:value={input} placeholder="Manuell erfassen" class="w-full my-2 bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-xs p-1.5">
       
       <div 
         class="place-content-center bg-neutral-200 dark:bg-neutral-800 active:bg-neutral-300 active:dark:bg-neutral-600 my-2 border border-neutral-300 dark:border-neutral-700 p-1.5 rounded text-2xl"
@@ -327,16 +371,16 @@
     </div>
 
     <div class="grow-2 flex flex-row gap-4 my-3">
-      <ButtonFull text={'Storno'} disabled={!allow_storno()} onpointerdown={() => storno(current_items, selected_item)} />
-      <ButtonFull text={'Bon Abbruch'} disabled={current_items.length === 0 && lidl_plus === false } onpointerdown={() => {current_items = []; lidl_plus = false;}}/>
-      <ButtonFull text={'Gebinde'} disabled={!allow_gebinde()} onpointerdown={() => gebinde(current_items, selected_item)} />
-      <ButtonFull text={'Menge'} disabled={current_items.length === 0 && input === ''} onpointerdown={() => apply_menge()}
+      <ButtonFull text={'Storno'} disabled={show_weight_input || !allow_storno()} onpointerdown={storno} />
+      <ButtonFull text={'Bon Abbruch'} disabled={show_weight_input || (current_items.length === 0 && lidl_plus === false)} onpointerdown={() => {current_items = []; lidl_plus = false;}}/>
+      <ButtonFull text={'Gebinde'} disabled={show_weight_input || !allow_gebinde()} onpointerdown={gebinde} />
+      <ButtonFull text={'Menge'} disabled={show_weight_input || (current_items.length === 0 && input === '')} onpointerdown={() => apply_menge()}
       />
     </div>
 
     <div class="grow-3 grid grid-cols-[4fr_1fr] gap-6 mb-4">
       <Numpad bind:input={input} />
-      <RightButtons {current_items} bind:input={input} bind:menge={menge} />
+      <RightButtons {current_items} bind:input={input} bind:menge={menge} bind:show_weight_modal={show_weight_input} bind:weighing_item={weighing_item} />
     </div>
   </div>
 </div>

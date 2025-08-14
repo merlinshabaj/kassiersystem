@@ -15,8 +15,8 @@
     border-neutral-300 dark:border-none
     rounded-xs
     font-medium
-    { disabled ? 'text-neutral-600 border-none'  : 'active:bg-neutral-300 dark:active:bg-neutral-700' }
+    { disabled ? 'text-neutral-300 dark:text-neutral-600 border-none'  : 'active:bg-neutral-300 dark:active:bg-neutral-700' }
   "
-  {onpointerdown}
+  onpointerdown={disabled ? () => {} : onpointerdown}
 >{text}
 </div>

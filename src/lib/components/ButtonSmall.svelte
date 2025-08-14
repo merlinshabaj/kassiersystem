@@ -15,7 +15,7 @@
     border-neutral-300 dark:border-neutral-700
     rounded-md
     font-medium
-    { disabled ? 'text-neutral-600 border-neutral-200 dark:border-neutral-800' : 'active:bg-neutral-300 dark:active:bg-neutral-700' }
+    { disabled ? 'text-neutral-300 dark:text-neutral-600 border-neutral-200 dark:border-neutral-800' : 'active:bg-neutral-300 dark:active:bg-neutral-700' }
   "
   {onpointerdown}
 >{text}

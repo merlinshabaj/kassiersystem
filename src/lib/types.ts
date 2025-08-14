@@ -19,6 +19,7 @@ export type Item_state = {
   count?: number,
   discount_applied?: boolean,
   gebinde_applied?: boolean,
+  weight?: number,
 }
 
 export type Item_list = (Item & Item_state)[];
