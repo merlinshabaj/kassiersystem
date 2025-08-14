@@ -287,6 +287,9 @@
         onpointerdown={() => {
           input = input.slice(0, -1);
           menge = 0;
+          if (selected_item !== undefined) {
+            selected_item.selected = false;
+          }
         }}
       >
       ←
@@ -296,6 +299,9 @@
         onpointerdown={() => {
           input = '';
           menge = 0;
+          if (selected_item !== undefined) {
+            selected_item.selected = false;
+          }
         }}
       >
         C
