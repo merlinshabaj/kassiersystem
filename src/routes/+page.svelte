@@ -25,6 +25,7 @@
   let customer_age: number = $state(0);
 
   let show_weight_input: boolean = $state(false);
+  let weight_input: HTMLInputElement | undefined = $state();
   let weighing_item: (Item & Item_state) | undefined = $state();
 
   $effect(() => {
@@ -69,6 +70,14 @@
       }
     });
   });
+
+  $effect(() => {
+    if (show_weight_input) {
+      requestAnimationFrame(() => {
+        weight_input?.focus();
+      });
+    }
+  })
 
   function simulate_click(element: HTMLElement) {
     element.dispatchEvent(
@@ -335,6 +344,7 @@
           name="weight"
           placeholder="Gramm"
           value={input}
+          bind:this={weight_input}
           class="
             placeholder:text-right
             bg-neutral-200
