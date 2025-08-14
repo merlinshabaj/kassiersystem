@@ -19,7 +19,9 @@
         price -= item.lidl_plus_discount * (item.count ?? 1);
       }
 
-      if (item.discount !== undefined && item.discount_applied === true) {
+      if (item.weighable && item.discount !== undefined && item.discount_applied === true) {
+        price += (item.price * item.weight!) * (1 - item.discount);
+      } else if (item.discount !== undefined && item.discount_applied === true) {
         price += ((item.price * (item.count ?? 1)) * (1 - item.discount));
       } else if (item.weighable) {
         price += item.price * item.weight!;
@@ -132,7 +134,9 @@
         <span class="font-medium">{item.count}x {item.name}</span>
       {/if}
 
-      {#if item.weighable}
+      {#if item.weighable && item.discount && item.discount_applied}
+        <span class="font-medium text-right h-fit self-center">{format_price(item.price * item.weight! * (1 - item.discount!))}</span>
+      {:else if item.weighable}
         <span class="font-medium text-right h-fit self-center">{format_price(item.price * item.weight!)}</span>
       {:else}
         <span class="font-medium text-right h-fit self-center">{format_price(item.price * (item.count ?? 1))}</span>
@@ -151,7 +155,11 @@
       {/if}
       {#if item.discount_applied === true && item.discount !== undefined}
         <span class="text-red-500">Rabatt {item.discount * 100}%</span>
-        <span class="text-red-500 text-right">{format_price(-item.price * item.discount * (item.count ?? 1))}</span>
+        {#if item.weighable}
+          <span class="text-red-500 text-right">{format_price((-item.price * item.weight!) * item.discount * (item.count ?? 1))}</span>
+        {:else}
+          <span class="text-red-500 text-right">{format_price(-item.price * item.discount * (item.count ?? 1))}</span>
+        {/if}
       {/if}
       </div>
     {/each}
