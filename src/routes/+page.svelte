@@ -222,15 +222,42 @@
 
     if (Number.isNaN(menge)) {
       if (selected_item !== undefined) {
-        const item = item_list.find((item) => item.name === selected_item.name);
-        assert(item !== undefined);
-        current_items.push(item);
+        find_and_push_item(selected_item);
+      } else {
+        const last_item = active_items.at(-1);
+        if (last_item !== undefined) {
+          find_and_push_item(last_item);
+        }
       }
 
       return;
+
+      function find_and_push_item(the_item: (Item & Item_state)) {
+        const item = item_list.find((item) => item.name === the_item.name);
+        assert(item !== undefined);
+        current_items.push(item);
+      }
     }
 
     input = "";
+  }
+
+  function allow_menge(): boolean {
+    const last_item = active_items.at(-1);
+
+    if (input === '' && last_item === undefined) {
+      return false;
+    }
+
+    if (
+      last_item !== undefined &&
+      selected_item === undefined &&
+      last_item.weighable === true
+    ) {
+      return false;
+    }
+
+    return true;
   }
 
   function discount() {
@@ -330,7 +357,10 @@
         </span>
         <ButtonSmall
           text={"Abbrechen"}
-          onpointerdown={() => (show_weight_input = false)}
+          onpointerdown={() => {
+            show_weight_input = false;
+            input = '';
+          }}
         />
       </span>
     </div>
@@ -444,8 +474,7 @@
       />
       <ButtonFull
         text={"Menge"}
-        disabled={show_weight_input ||
-          (current_items.length === 0 && input === "")}
+        disabled={show_weight_input || !allow_menge()}
         onpointerdown={() => apply_menge()}
       />
     </div>
