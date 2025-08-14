@@ -35,7 +35,6 @@
         price += item.pfand * (item.count ?? 1);
       }
 
-      console.log('price', price)
       return price;
     }, 0)
   );
