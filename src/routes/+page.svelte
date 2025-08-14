@@ -252,7 +252,14 @@
     if (
       last_item !== undefined &&
       selected_item === undefined &&
-      last_item.weighable === true
+      last_item.weighable
+    ) {
+      return false;
+    }
+
+    if (
+      selected_item !== undefined &&
+      selected_item.weighable
     ) {
       return false;
     }
