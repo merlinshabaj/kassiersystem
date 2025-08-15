@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fade, fly, slide } from "svelte/transition";
+  import { fade } from "svelte/transition";
 
   import Itemlist from "$lib/components/Itemlist.svelte";
   import Numpad from "$lib/components/Numpad.svelte";
@@ -25,7 +25,6 @@
   let customer_age: number = $state(0);
 
   let show_weight_input: boolean = $state(false);
-  let weight_input: HTMLInputElement | undefined = $state();
   let weighing_item: (Item & Item_state) | undefined = $state();
 
   $effect(() => {
@@ -71,14 +70,6 @@
     });
   });
 
-  $effect(() => {
-    if (show_weight_input) {
-      requestAnimationFrame(() => {
-        weight_input?.focus();
-      });
-    }
-  })
-
   function simulate_click(element: HTMLElement) {
     element.dispatchEvent(
       new PointerEvent("pointerdown", {
@@ -109,6 +100,7 @@
     ) {
       const element = document.getElementById(event.key);
       assert(element !== null);
+      console.log('keydown')
       input += event.key;
     }
 
@@ -345,7 +337,6 @@
           placeholder="Gramm"
           value={input}
           inputmode="none"
-          bind:this={weight_input}
           class="
             placeholder:text-right
             bg-neutral-200
@@ -439,7 +430,7 @@
     <div class="flex flex-row gap-2">
       <input
         type="text"
-        bind:value={input}
+        value={input}
         placeholder="Manuell erfassen"
         class="w-full my-2 bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-xs p-1.5"
       />
