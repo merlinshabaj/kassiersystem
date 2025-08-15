@@ -6,38 +6,24 @@
   import RightButtons from "$lib/components/RightButtons.svelte";
   import ButtonFull from "$lib/components/ButtonFull.svelte";
   import ButtonSmall from "$lib/components/ButtonSmall.svelte";
+  import { get_state_context, set_state_context, State } from '$lib/state.svelte';
   import { type Item, type Item_list, type Item_state } from "$lib/types";
   import { item_list, offers, scan_items, special_items } from "$lib/data";
   import { assert } from "$lib/utilities";
 
-  let current_items: Item_list = $state([]);
-  const active_items: Item_list = $derived(
-    current_items.filter((item) => item.storno !== true),
-  );
-  const selected_item = $derived(
-    current_items.filter((item) => item.selected === true).at(0),
-  );
-
-  let input: string = $state("");
-  let menge: number = $state(0);
-  let lidl_plus: boolean = $state(false);
-  // TODO
-  let customer_age: number = $state(0);
-
-  let show_weight_input: boolean = $state(false);
-  let weighing_item: (Item & Item_state) | undefined = $state();
+  let state = set_state_context();
 
   $effect(() => {
     offers.forEach((offer) => {
       let count = 0;
       if (offer.item[0] === "plu") {
-        current_items.forEach((item) => {
+        state.current_items.forEach((item) => {
           if (item.plu === offer.item[1] && !item.storno) {
             count += item.count ?? 1;
           }
         });
       } else {
-        current_items.forEach((item) => {
+        state.current_items.forEach((item) => {
           if (item.ean === offer.item[1]) {
             count += item.count ?? 1;
           }
@@ -49,7 +35,7 @@
         const final_discount = offer.discount * Math.floor(count / offer.count);
         console.log(final_discount);
 
-        const first_item = current_items.find((item) => {
+        const first_item = state.current_items.find((item) => {
           if (offer.item[0] === "plu") {
             return item.plu === offer.item[1] && !item.storno;
           } else {
@@ -100,39 +86,39 @@
     ) {
       const element = document.getElementById(event.key);
       assert(element !== null);
-      console.log('keydown')
-      input += event.key;
+      console.log("keydown");
+      state.input += event.key;
     }
 
     if (event.key === "Backspace") {
-      input = input.slice(0, -1);
+      state.input = state.input.slice(0, -1);
     }
 
     if (event.key === "Enter" && event.shiftKey) {
       const item = item_list.find(
-        (item) => item.ean !== undefined && item.ean.toString() === input,
+        (item) => item.ean !== undefined && item.ean.toString() === state.input,
       );
       if (item !== undefined) {
         const item_copy = { ...item };
-        if (menge > 1) {
-          item_copy.count = menge;
-          menge = 0;
+        if (state.menge > 1) {
+          item_copy.count = state.menge;
+          state.menge = 0;
         }
-        current_items.push(item_copy);
-        input = "";
+        state.current_items.push(item_copy);
+        state.input = "";
       }
     } else if (event.key === "Enter") {
       const item = item_list.find(
-        (item) => item.plu !== undefined && item.plu.toString() === input,
+        (item) => item.plu !== undefined && item.plu.toString() === state.input,
       );
       if (item !== undefined) {
         const item_copy = { ...item };
-        if (menge > 1) {
-          item_copy.count = menge;
-          menge = 0;
+        if (state.menge > 1) {
+          item_copy.count = state.menge;
+          state.menge = 0;
         }
-        current_items.push(item_copy);
-        input = "";
+        state.current_items.push(item_copy);
+        state.input = "";
       }
     }
 
@@ -141,7 +127,7 @@
       (event.metaKey && event.key === "Backspace") ||
       event.key === "Escape"
     ) {
-      input = "";
+      state.input = "";
     }
 
     if (event.key === "m" || event.key === "*") {
@@ -150,23 +136,23 @@
   }
 
   function storno() {
-    if (selected_item === undefined) {
+    if (state.selected_item === undefined) {
       select_last_item();
       return;
     }
 
-    selected_item.storno = true;
-    selected_item.selected = false;
+    state.selected_item.storno = true;
+    state.selected_item.selected = false;
   }
 
   function allow_storno(): boolean {
-    if (selected_item === undefined && active_items.length > 1) {
+    if (state.selected_item === undefined && state.active_items.length > 1) {
       return true;
-    } else if (selected_item === undefined) {
+    } else if (state.selected_item === undefined) {
       return false;
     }
 
-    if (active_items.length === 1) {
+    if (state.active_items.length === 1) {
       return false;
     }
 
@@ -174,12 +160,12 @@
   }
 
   function gebinde() {
-    if (selected_item === undefined) {
-      apply_gebinde(active_items.at(-1)!); // can be asserted since allow gebinde already checked for that
+    if (state.selected_item === undefined) {
+      apply_gebinde(state.active_items.at(-1)!); // can be asserted since allow gebinde already checked for that
       return;
     }
 
-    apply_gebinde(selected_item);
+    apply_gebinde(state.selected_item);
 
     function apply_gebinde(item: Item & Item_state) {
       const count = item.count ?? 1;
@@ -191,7 +177,7 @@
   }
 
   function allow_gebinde(): boolean {
-    const last_item = active_items.at(-1);
+    const last_item = state.active_items.at(-1);
     if (
       last_item !== undefined &&
       last_item.gebinde !== undefined &&
@@ -200,11 +186,11 @@
       return true;
     }
 
-    if (selected_item === undefined) {
+    if (state.selected_item === undefined) {
       return false;
     }
 
-    if (selected_item.gebinde_applied || selected_item.gebinde === undefined) {
+    if (state.selected_item.gebinde_applied || state.selected_item.gebinde === undefined) {
       return false;
     }
 
@@ -212,20 +198,20 @@
   }
 
   function select_last_item() {
-    const last_item = active_items.at(-1);
+    const last_item = state.active_items.at(-1);
     if (last_item !== undefined) {
       last_item.selected = true;
     }
   }
 
   function apply_menge() {
-    menge = parseInt(input);
+    state.menge = parseInt(state.input);
 
-    if (Number.isNaN(menge)) {
-      if (selected_item !== undefined) {
-        find_and_push_item(selected_item);
+    if (Number.isNaN(state.menge)) {
+      if (state.selected_item !== undefined) {
+        find_and_push_item(state.selected_item);
       } else {
-        const last_item = active_items.at(-1);
+        const last_item = state.active_items.at(-1);
         if (last_item !== undefined) {
           find_and_push_item(last_item);
         }
@@ -233,35 +219,32 @@
 
       return;
 
-      function find_and_push_item(the_item: (Item & Item_state)) {
+      function find_and_push_item(the_item: Item & Item_state) {
         const item = item_list.find((item) => item.name === the_item.name);
         assert(item !== undefined);
-        current_items.push(item);
+        state.current_items.push(item);
       }
     }
 
-    input = "";
+    state.input = "";
   }
 
   function allow_menge(): boolean {
-    const last_item = active_items.at(-1);
+    const last_item = state.active_items.at(-1);
 
-    if (input === '' && last_item === undefined) {
+    if (state.input === "" && last_item === undefined) {
       return false;
     }
 
     if (
       last_item !== undefined &&
-      selected_item === undefined &&
+      state.selected_item === undefined &&
       last_item.weighable
     ) {
       return false;
     }
 
-    if (
-      selected_item !== undefined &&
-      selected_item.weighable
-    ) {
+    if (state.selected_item !== undefined && state.selected_item.weighable) {
       return false;
     }
 
@@ -273,19 +256,19 @@
       return;
     }
 
-    assert(selected_item !== undefined);
+    assert(state.selected_item !== undefined);
 
-    selected_item.discount_applied = true;
+    state.selected_item.discount_applied = true;
   }
 
   function discount_allowed(): boolean {
-    if (selected_item === undefined) {
+    if (state.selected_item === undefined) {
       return false;
     }
 
     const condition =
-      selected_item.discount_applied !== true &&
-      selected_item.discount !== undefined;
+      state.selected_item.discount_applied !== true &&
+      state.selected_item.discount !== undefined;
 
     return condition;
   }
@@ -296,12 +279,12 @@
 
     const pfand_copy = { ...pfand };
 
-    if (menge >= 1) {
-      pfand_copy.count = menge;
-      menge = 0;
+    if (state.menge >= 1) {
+      pfand_copy.count = state.menge;
+      state.menge = 0;
     }
 
-    current_items.push(pfand_copy);
+    state.current_items.push(pfand_copy);
   }
 </script>
 
@@ -310,9 +293,9 @@
 <div
   class="grid grid-cols-[1fr_2fr] select-none cursor-default dark:text-white"
 >
-  {#if show_weight_input}
+  {#if state.show_weight_input}
     <div
-      onclose={() => (show_weight_input = false)}
+      onclose={() => (state.show_weight_input = false)}
       in:fade={{ duration: 100 }}
       class="
         flex
@@ -335,7 +318,7 @@
           type="text"
           name="weight"
           placeholder="Gramm"
-          value={input}
+          value={state.input}
           inputmode="none"
           class="
             placeholder:text-right
@@ -353,29 +336,29 @@
         <span class="grow">
           <ButtonSmall
             text={"Bestätigen"}
-            disabled={input === ""}
+            disabled={state.input === ""}
             onpointerdown={() => {
-              assert(weighing_item !== undefined);
-              weighing_item.weight = parseInt(input) / 1000;
-              current_items.push(weighing_item);
-              weighing_item = undefined;
-              input = "";
-              show_weight_input = false;
+              assert(state.weighing_item !== undefined);
+              state.weighing_item.weight = parseInt(state.input) / 1000;
+              state.current_items.push(state.weighing_item);
+              state.weighing_item = undefined;
+              state.input = "";
+              state.show_weight_input = false;
             }}
           />
         </span>
         <ButtonSmall
           text={"Abbrechen"}
           onpointerdown={() => {
-            show_weight_input = false;
-            input = '';
+            state.show_weight_input = false;
+            state.input = "";
           }}
         />
       </span>
     </div>
   {:else}
     <div in:fade={{ duration: 100 }} class="flex flex-col">
-      <Itemlist items={current_items} {menge} {lidl_plus} />
+      <Itemlist items={state.current_items} menge={state.menge} lidl_plus={state.lidl_plus} />
       <div
         class="h-[20%] p-2 gap-2 grid grid-cols-[auto_auto_auto] grid-rows-2 items-center"
       >
@@ -403,22 +386,28 @@
           <span class="grow">
             <ButtonSmall
               text={"Lidl Plus"}
-              disabled={lidl_plus}
-              onpointerdown={() => (lidl_plus = true)}
+              disabled={state.lidl_plus}
+              onpointerdown={() => (state.lidl_plus = true)}
             />
           </span>
           <ButtonSmall
             text={"Lidl Plus Storno"}
-            disabled={!lidl_plus}
-            onpointerdown={() => (lidl_plus = false)}
+            disabled={!state.lidl_plus}
+            onpointerdown={() => (state.lidl_plus = false)}
           />
         </div>
         <ButtonSmall
           text={"Waare scannen"}
           onpointerdown={() => {
-            current_items.push(
-              scan_items[Math.floor(Math.random() * scan_items.length)],
-            );
+            state.summe = false;
+            const random_item = {...scan_items[Math.floor(Math.random() * scan_items.length)]};
+
+            if (state.input !== '') {
+              random_item.count = parseInt(state.input);
+            }
+            state.input = '';
+
+            state.current_items.push(random_item);
           }}
         />
         <ButtonSmall text={"Rückstellungen"} disabled={true} />
@@ -430,7 +419,7 @@
     <div class="flex flex-row gap-2">
       <input
         type="text"
-        value={input}
+        value={state.input}
         placeholder="Manuell erfassen"
         class="w-full my-2 bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-xs p-1.5"
       />
@@ -438,10 +427,12 @@
       <div
         class="place-content-center bg-neutral-200 dark:bg-neutral-800 active:bg-neutral-300 active:dark:bg-neutral-600 my-2 border border-neutral-300 dark:border-neutral-700 p-1.5 rounded text-2xl"
         onpointerdown={() => {
-          input = input.slice(0, -1);
-          menge = 0;
-          if (selected_item !== undefined) {
-            selected_item.selected = false;
+          if (state.input === "") {
+            state.menge = 0;
+          }
+          state.input = state.input.slice(0, -1);
+          if (state.selected_item !== undefined) {
+            state.selected_item.selected = false;
           }
         }}
       >
@@ -450,10 +441,12 @@
       <div
         class="place-content-center bg-neutral-200 dark:bg-neutral-800 active:bg-neutral-300 dark:active:bg-neutral-600 my-2 border border-neutral-300 dark:border-neutral-700 p-1.5 rounded text-lg"
         onpointerdown={() => {
-          input = "";
-          menge = 0;
-          if (selected_item !== undefined) {
-            selected_item.selected = false;
+          if (state.input === "") {
+            state.menge = 0;
+          }
+          state.input = "";
+          if (state.selected_item !== undefined) {
+            state.selected_item.selected = false;
           }
         }}
       >
@@ -464,38 +457,39 @@
     <div class="grow-2 flex flex-row gap-4 my-3">
       <ButtonFull
         text={"Storno"}
-        disabled={show_weight_input || !allow_storno()}
+        disabled={state.show_weight_input || !allow_storno()}
         onpointerdown={storno}
       />
       <ButtonFull
         text={"Bon Abbruch"}
-        disabled={show_weight_input ||
-          (current_items.length === 0 && lidl_plus === false)}
+        disabled={state.show_weight_input ||
+          (state.current_items.length === 0 && state.lidl_plus === false)}
         onpointerdown={() => {
-          current_items = [];
-          lidl_plus = false;
+          state.current_items = [];
+          state.lidl_plus = false;
         }}
       />
       <ButtonFull
         text={"Gebinde"}
-        disabled={show_weight_input || !allow_gebinde()}
+        disabled={state.show_weight_input || !allow_gebinde()}
         onpointerdown={gebinde}
       />
       <ButtonFull
         text={"Menge"}
-        disabled={show_weight_input || !allow_menge()}
+        disabled={state.show_weight_input || !allow_menge()}
         onpointerdown={() => apply_menge()}
       />
     </div>
 
     <div class="grow-3 grid grid-cols-[4fr_1fr] gap-6 mb-4">
-      <Numpad bind:input />
+      <Numpad bind:input={state.input} />
       <RightButtons
-        {current_items}
-        bind:input
-        bind:menge
-        bind:show_weight_modal={show_weight_input}
-        bind:weighing_item
+        current_items={state.current_items}
+        bind:input={state.input}
+        bind:menge={state.menge}
+        bind:show_weight_input={state.show_weight_input}
+        bind:weighing_item={state.weighing_item}
+        bind:summe={state.summe}
       />
     </div>
   </div>
