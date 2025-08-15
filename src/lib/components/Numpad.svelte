@@ -1,7 +1,9 @@
 <script lang='ts'>
-  const numbers = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0, '00', ','];
+  import { get_app_context } from "$lib/app.svelte";
 
-  let { input = $bindable() }: { input: string } = $props();
+  let app = get_app_context();
+
+  const numbers = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0, '00', ','];
 </script>
 
 <div class="grid grid-cols-3 grid-rows-4 gap-3.5">
@@ -13,8 +15,8 @@
         if (number === ',') {
           return;
         }
-        
-        input += number.toString();
+
+        app.input += number.toString();
       }}
     >
       {number}

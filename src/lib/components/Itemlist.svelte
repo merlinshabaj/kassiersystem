@@ -1,10 +1,12 @@
 <script lang='ts'>
+  import { get_app_context } from '$lib/app.svelte';
   import { type Item_list } from '$lib/types';
   import { assert } from '$lib/utilities';
 
-  let { items, menge, lidl_plus }: { items: Item_list, menge: number, lidl_plus: boolean } = $props();
+  let app = get_app_context();
+
   const total_price = $derived(
-    items.reduce((sum, item) => {
+    app.items.reduce((sum, item) => {
       let price = sum;
 
       if (item.storno) {
@@ -15,7 +17,7 @@
         price -= item.lidl_discount * (item.count ?? 1);
       }
 
-      if (lidl_plus && item.lidl_plus_discount !== undefined) {
+      if (app.lidl_plus && item.lidl_plus_discount !== undefined) {
         price -= item.lidl_plus_discount * (item.count ?? 1);
       }
 
@@ -43,19 +45,19 @@
   // otherwise it should be visible
   let hide_scrollbar = $state(false);
 
-  let previous_items_length = items.length;
+  let previous_items_length = app.items.length;
 
   $effect(() => {
     const list = document.getElementById('list');
-    if (previous_items_length < items.length) {
+    if (previous_items_length < app.items.length) {
       assert(list !== null);
       list.scrollTop = list.scrollHeight;
-      previous_items_length = items.length;
+      previous_items_length = app.items.length;
 
-      items.forEach(item => item.selected = false);
+      app.items.forEach(item => item.selected = false);
     }
 
-    if (menge > 1) {
+    if (app.menge > 1) {
       assert(list !== null);
       list.scrollTop = list.scrollHeight;
     }
@@ -107,7 +109,7 @@
 
 <div class="flex flex-col m-2">
   <div id="list" class="flex flex-col h-[50vh] overflow-scroll {hide_scrollbar ? 'scrollbar-hide' : ''}">
-    {#each items as item, i}
+    {#each app.items as item, i}
       <div
         class="
           grid
@@ -119,7 +121,7 @@
           {item.storno ? 'line-through *:text-neutral-500' : ''}
           {item.selected ? 'bg-neutral-300 dark:bg-neutral-700!' : ''}
         "
-        onpointerdown={() => select_item(items, i)}
+        onpointerdown={() => select_item(app.items, i)}
       >
       {#if item.weighable }
         <span class="font-medium">
@@ -148,7 +150,7 @@
         <span class="text-red-500">Preisvorteil</span>
         <span class="text-red-500 text-right">{format_price(-item.lidl_discount * (item.count ?? 1))}</span>
       {/if}
-      {#if lidl_plus && item.lidl_plus_discount}
+      {#if app.lidl_plus && item.lidl_plus_discount}
         <span class="text-blue-500">Lidl Plus Rabatt</span>
         <span class="text-blue-500 text-right">{format_price(-item.lidl_plus_discount * (item.count ?? 1))}</span>
       {/if}
@@ -163,7 +165,7 @@
       </div>
     {/each}
 
-    {#if menge > 1}
+    {#if app.menge > 1}
       <div
         class="
           grid
@@ -174,16 +176,16 @@
           bg-neutral-200 dark:bg-neutral-800
         "
       >
-      {menge}x
+      {app.menge}x
       </div>
     {/if}
   </div>
-  
+
   <div class="flex flex-row justify-between items-center h-8 font-bold mt-1">
     <span class="h-fit">Total:</span>
     <span class="h-fit flex flex-row gap-2 items-center">
       {format_price(total_price)}
-      {#if lidl_plus}
+      {#if app.lidl_plus}
         <svg class="rounded border" xmlns="http://www.w3.org/2000/svg" version="1.1" width="30" height="30" viewBox="0 0 60 60">
           <path fill="#0050aa" d="M0.522 0.522h58.957v58.957h-58.957z"/>
           <path fill="#fff" d="M59.478 0.522v58.957h-58.957v-58.957h58.957zM60 0h-60v60h60v-60z"/>
@@ -198,6 +200,6 @@
       {/if}
     </span>
 
-    
+
   </div>
 </div>
