@@ -35,7 +35,7 @@
 <div class="flex flex-col gap-2">
   {#if app.summe}
     <OperationButton
-      text={'Karte mit Cashback'}
+      text={'Karte plus Cashback'}
       disabled={app.sidebar_view !== 'default'}
       onpointerdown={() => app.sidebar_view = 'cashback_input'}
     />

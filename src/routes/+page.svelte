@@ -294,20 +294,28 @@
 <svelte:body onkeydown={keybindings} />
 
 <div
-  class="grid grid-cols-[1fr_2fr] select-none cursor-default dark:text-white"
+  class="grid grid-cols-[3fr_3fr] select-none cursor-default dark:text-white"
 >
   {#if app.sidebar_view === "weight_input"}
-    <span class="place-content-center"><InputView kind={"weight"} /></span>
+    <span class="place-content-center">
+      <InputView kind={"weight"} />
+    </span>
   {:else if app.sidebar_view === "cashback_input"}
     <div class="flex flex-col justify-center">
       <InputView kind={"cashback"} />
-      <div class="flex flex-col gap-1 m-2">
+      <div class="h-[20%] p-2 gap-2 grid grid-cols-[auto_auto_auto] grid-rows-2 items-center">
         <CashButtons />
       </div>
     </div>
   {:else}
     <div in:fade={{ duration: 100 }} class="flex flex-col">
-      <Itemlist />
+      {#if app.sidebar_view === 'default'}
+        <Itemlist />
+      {:else if app.sidebar_view === 'cashback_input'}
+        <div class="grow flex items-center">
+          <InputView kind={'cashback'} />
+        </div>
+      {/if}
       <div
         class="h-[20%] p-2 gap-2 grid grid-cols-[auto_auto_auto] grid-rows-2 items-center"
       >
@@ -333,6 +341,7 @@
           />
         {/if}
       </div>
+
       <div class="h-1 m-2 bg-neutral-200 dark:bg-neutral-800 rounded-2xl"></div>
       <div class="flex flex-col gap-2 p-2">
         <div class="flex flex-row gap-2 justify-between">
@@ -365,7 +374,7 @@
             app.items.push(random_item);
           }}
         />
-        <ButtonSmall text={"Rückstellungen"} disabled={true} />
+          <ButtonSmall text={"Rückstellungen"} disabled={true} />
       </div>
     </div>
   {/if}
