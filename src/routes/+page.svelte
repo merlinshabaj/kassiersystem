@@ -6,7 +6,7 @@
   import RightButtons from "$lib/components/RightButtons.svelte";
   import ButtonFull from "$lib/components/ButtonFull.svelte";
   import ButtonSmall from "$lib/components/ButtonSmall.svelte";
-  import { get_app_context, set_app_context } from '$lib/app.svelte';
+  import { set_app_context } from '$lib/app.svelte';
   import { type Item, type Item_list, type Item_state } from "$lib/types";
   import { item_list, offers, scan_items, special_items } from "$lib/data";
   import { assert } from "$lib/utilities";

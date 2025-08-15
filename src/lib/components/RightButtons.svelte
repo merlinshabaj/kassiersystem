@@ -39,9 +39,12 @@
     <OperationButton text={'Bar'} disabled={state.show_weight_input} />
   {:else}
     <OperationButton text={'PLU'} disabled={state.show_weight_input} onpointerdown={() => add_by_number('plu')} />
-    <OperationButton text={'Summe'} disabled={state.show_weight_input} onpointerdown={() => {
-      if (state.active_items.length > 0) {
-        state.summe = true;
+    <OperationButton
+      text={'Summe'}
+      disabled={state.show_weight_input || state.active_items.length === 0}
+      onpointerdown={() => {
+        if (state.active_items.length > 0) {
+          state.summe = true;
       }
     }} />
     <OperationButton text={'EAN'} disabled={state.show_weight_input} onpointerdown={() => add_by_number('ean')} />
