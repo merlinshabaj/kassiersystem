@@ -6,10 +6,12 @@
   import RightButtons from "$lib/components/RightButtons.svelte";
   import ButtonFull from "$lib/components/ButtonFull.svelte";
   import ButtonSmall from "$lib/components/ButtonSmall.svelte";
-  import { set_app_context } from '$lib/app.svelte';
+  import { set_app_context } from "$lib/app.svelte";
   import { type Item, type Item_list, type Item_state } from "$lib/types";
   import { item_list, offers, scan_items, special_items } from "$lib/data";
   import { assert } from "$lib/utilities";
+  import CashButtons from "$lib/components/CashButtons.svelte";
+  import InputView from "$lib/components/InputView.svelte";
 
   let app = set_app_context();
 
@@ -188,7 +190,10 @@
       return false;
     }
 
-    if (app.selected_item.gebinde_applied || app.selected_item.gebinde === undefined) {
+    if (
+      app.selected_item.gebinde_applied ||
+      app.selected_item.gebinde === undefined
+    ) {
       return false;
     }
 
@@ -291,68 +296,14 @@
 <div
   class="grid grid-cols-[1fr_2fr] select-none cursor-default dark:text-white"
 >
-  {#if app.show_weight_input}
-    <div
-      onclose={() => (app.show_weight_input = false)}
-      in:fade={{ duration: 100 }}
-      class="
-        flex
-        flex-col
-        gap-2
-        items-start
-        justify-start
-        w-full
-        m-auto
-        p-4
-        bg-neutral-100
-        dark:bg-neutral-900
-        rounded
-        dark:text-white
-      "
-    >
-      <span class="flex flex-col w-full">
-        <label for="weight" class="font-medium">Gewicht</label>
-        <input
-          type="text"
-          name="weight"
-          placeholder="Gramm"
-          value={app.input}
-          inputmode="none"
-          class="
-            placeholder:text-right
-            bg-neutral-200
-            dark:bg-neutral-800
-
-            border-neutral-300
-            dark:border-neutral-700
-            rounded
-            p-1
-          "
-        />
-      </span>
-      <span class="flex flex-row gap-2 w-full">
-        <span class="grow">
-          <ButtonSmall
-            text={"Bestätigen"}
-            disabled={app.input === ""}
-            onpointerdown={() => {
-              assert(app.weighing_item !== undefined);
-              app.weighing_item.weight = parseInt(app.input) / 1000;
-              app.items.push(app.weighing_item);
-              app.weighing_item = undefined;
-              app.input = "";
-              app.show_weight_input = false;
-            }}
-          />
-        </span>
-        <ButtonSmall
-          text={"Abbrechen"}
-          onpointerdown={() => {
-            app.show_weight_input = false;
-            app.input = "";
-          }}
-        />
-      </span>
+  {#if app.sidebar_view === "weight_input"}
+    <span class="place-content-center"><InputView kind={"weight"} /></span>
+  {:else if app.sidebar_view === "cashback_input"}
+    <div class="flex flex-col justify-center">
+      <InputView kind={"cashback"} />
+      <div class="flex flex-col gap-1 m-2">
+        <CashButtons />
+      </div>
     </div>
   {:else}
     <div in:fade={{ duration: 100 }} class="flex flex-col">
@@ -360,25 +311,29 @@
       <div
         class="h-[20%] p-2 gap-2 grid grid-cols-[auto_auto_auto] grid-rows-2 items-center"
       >
-        <ButtonSmall text={"Bonrückstellung"} disabled={true} />
-        <ButtonSmall text={""} />
-        <ButtonSmall text={""} />
-        <ButtonSmall
-          text={"Sodastream"}
-          onpointerdown={() => add_pfand("Sodastream Pfand")}
-        />
-        <ButtonSmall
-          text={"Pfand"}
-          disabled={false}
-          onpointerdown={() => add_pfand("Pfand")}
-        />
-        <ButtonSmall
-          text={"Rabatt"}
-          onpointerdown={() => discount()}
-          disabled={!discount_allowed()}
-        />
+        {#if app.summe}
+          <CashButtons />
+        {:else}
+          <ButtonSmall text={"Bonrückstellung"} disabled={true} />
+          <ButtonSmall text={""} />
+          <ButtonSmall text={""} />
+          <ButtonSmall
+            text={"Sodastream"}
+            onpointerdown={() => add_pfand("Sodastream Pfand")}
+          />
+          <ButtonSmall
+            text={"Pfand"}
+            disabled={false}
+            onpointerdown={() => add_pfand("Pfand")}
+          />
+          <ButtonSmall
+            text={"Rabatt"}
+            onpointerdown={() => discount()}
+            disabled={!discount_allowed()}
+          />
+        {/if}
       </div>
-      <div class="h-1 m-2 bg-neutral-400 dark:bg-neutral-800 rounded-2xl"></div>
+      <div class="h-1 m-2 bg-neutral-200 dark:bg-neutral-800 rounded-2xl"></div>
       <div class="flex flex-col gap-2 p-2">
         <div class="flex flex-row gap-2 justify-between">
           <span class="grow">
@@ -398,12 +353,14 @@
           text={"Waare scannen"}
           onpointerdown={() => {
             app.summe = false;
-            const random_item = {...scan_items[Math.floor(Math.random() * scan_items.length)]};
+            const random_item = {
+              ...scan_items[Math.floor(Math.random() * scan_items.length)],
+            };
 
-            if (app.input !== '') {
+            if (app.input !== "") {
               random_item.count = parseInt(app.input);
             }
-            app.input = '';
+            app.input = "";
 
             app.items.push(random_item);
           }}
@@ -455,12 +412,12 @@
     <div class="grow-2 flex flex-row gap-4 my-3">
       <ButtonFull
         text={"Storno"}
-        disabled={app.show_weight_input || !allow_storno()}
+        disabled={app.sidebar_view !== "default" || !allow_storno()}
         onpointerdown={storno}
       />
       <ButtonFull
         text={"Bon Abbruch"}
-        disabled={app.show_weight_input ||
+        disabled={app.sidebar_view !== "default" ||
           (app.items.length === 0 && app.lidl_plus === false)}
         onpointerdown={() => {
           app.items = [];
@@ -469,12 +426,12 @@
       />
       <ButtonFull
         text={"Gebinde"}
-        disabled={app.show_weight_input || !allow_gebinde()}
+        disabled={app.sidebar_view !== "default" || !allow_gebinde()}
         onpointerdown={gebinde}
       />
       <ButtonFull
         text={"Menge"}
-        disabled={app.show_weight_input || !allow_menge()}
+        disabled={app.sidebar_view !== "default" || !allow_menge()}
         onpointerdown={() => apply_menge()}
       />
     </div>
