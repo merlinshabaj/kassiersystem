@@ -344,6 +344,7 @@
           name="weight"
           placeholder="Gramm"
           value={input}
+          inputmode="none"
           bind:this={weight_input}
           class="
             placeholder:text-right
